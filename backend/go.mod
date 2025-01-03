@@ -1,6 +1,6 @@
-module assignment-definitive
+module assignment-definitive/backend
 
-go 1.23
+go 1.23.4
 
 require (
 	github.com/gin-gonic/gin v1.10.0
