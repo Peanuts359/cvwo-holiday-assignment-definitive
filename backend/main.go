@@ -5,21 +5,20 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
-	_ "github.com/mattn/go-sqlite3"
+    _ "modernc.org/sqlite"
 
 	"assignment-definitive/backend/handlers"
+	"github.com/gin-contrib/cors"
 )
 
 var db *sql.DB
 
 func initDB() {
 	var err error
-	db, err = sql.Open("sqlite3", "./database.db")
+	db, err = sql.Open("sqlite", "./database.db")
 	if err != nil {
 		log.Fatal("Failed to connect to the database:", err)
 	}
-
-	// Read and execute schema.sql
 	schema := `
 	CREATE TABLE IF NOT EXISTS users (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -34,16 +33,17 @@ func initDB() {
 }
 
 func main() {
-	// Initialize the database
 	initDB()
-
-	// Set up the router
 	r := gin.Default()
 
-	// Register routes from handlers
+	err := r.SetTrustedProxies(nil)
+	if err != nil {
+		log.Fatal("Failed to set trusted proxies:", err)
+	}
+
+	r.Use(cors.Default())
 	handlers.RegisterRoutes(r, db)
 
-	// Start the server
 	log.Println("Server running on :8080")
 	r.Run(":8080")
 }

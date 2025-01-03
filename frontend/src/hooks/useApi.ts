@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:8080"; // Your backend URL
+const API_URL = "http://localhost:8080";
 
 export const useApi = () => {
     const login = async (data: { username: string; password: string }) => {

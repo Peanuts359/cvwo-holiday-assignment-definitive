@@ -1,26 +1,34 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import { useApi } from "../hooks/useApi";
+import { useNavigate } from "react-router-dom";
 
 const Register: React.FC = () => {
     const { register } = useApi();
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState<string | null>(null);
+    const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setError(null);
+
         try {
             const response = await register({ username, email, password });
             alert("Registration successful: " + response.message);
-        } catch (error: any) {
-            alert("Error: " + error.response.data.error);
+            navigate("/");
+        } catch (err: any) {
+            const errorMessage =
+                err.response?.data?.error || "An unexpected error occurred.";
+            setError(errorMessage);
         }
     };
 
     return (
         <form onSubmit={handleSubmit}>
             <h1>Register</h1>
+            {error && <p style={{ color: "red" }}>{error}</p>}
             <input
                 type="text"
                 placeholder="Username"
@@ -40,10 +48,6 @@ const Register: React.FC = () => {
                 onChange={(e) => setPassword(e.target.value)}
             />
             <button type="submit">Register</button>
-
-            <div>
-                <p>Already have an account? <Link to="/">Login here</Link></p>
-            </div>
         </form>
     );
 };
