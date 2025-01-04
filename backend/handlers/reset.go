@@ -18,15 +18,21 @@ func ResetHandler(c *gin.Context, db *sql.DB) {
 		return
 	}
 
-	result, err := db.Exec("UPDATE users SET password = ? WHERE email = ?", req.NewPassword, req.Email)
+	var emailExists bool
+	err := db.QueryRow("SELECT EXISTS(SELECT 1 FROM users WHERE email = ?)", req.Email).Scan(&emailExists)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update password"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to query the database"})
 		return
 	}
 
-	rowsAffected, _ := result.RowsAffected()
-	if rowsAffected == 0 {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Email not found"})
+	if !emailExists {
+		c.JSON(http.StatusNotFound, gin.H{"error": "No account uses this email"})
+		return
+	}
+
+	_, err = db.Exec("UPDATE users SET password = ? WHERE email = ?", req.NewPassword, req.Email)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update password"})
 		return
 	}
 

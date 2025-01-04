@@ -16,7 +16,7 @@ const App: React.FC = () => {
               <Link to="/register">Register</Link>
             </li>
             <li>
-              <Link to="/reset-password">Reset Password</Link>
+              <Link to="/reset">Reset Password</Link>
             </li>
           </ul>
         </nav>
@@ -24,7 +24,7 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/reset-password" element={<Reset />} />
+          <Route path="/reset" element={<Reset />} />
         </Routes>
       </div>
   );
