@@ -6,16 +6,17 @@ const Login: React.FC = () => {
     const { login } = useApi();
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const navigate = useNavigate(); // React Router's navigation hook
+    const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
             await login({ username, password });
             alert("Login successful");
-            navigate("/dashboard"); // Redirect to a dashboard or another page
+            navigate("/menu");
         } catch (error: any) {
             alert("Error: " + error.response.data.error);
+            setPassword("");
         }
     };
 

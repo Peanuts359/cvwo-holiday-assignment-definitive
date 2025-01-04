@@ -6,7 +6,8 @@ import (
 )
 
 func RegisterRoutes(r *gin.Engine, db *sql.DB) {
-	r.POST("/login", func(c *gin.Context) { LoginHandler(c, db) })
+	r.POST("/", func(c *gin.Context) { LoginHandler(c, db) })
 	r.POST("/register", func(c *gin.Context) { RegisterHandler(c, db) })
 	r.POST("/reset", func(c *gin.Context) { ResetHandler(c, db) })
+	r.GET("/menu", func(c *gin.Context) { MenuHandler(c) })
 }

@@ -41,7 +41,12 @@ func main() {
 		log.Fatal("Failed to set trusted proxies:", err)
 	}
 
-	r.Use(cors.Default())
+	r.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost:3000"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
+		AllowHeaders:     []string{"Content-Type", "Authorization", "Username"},
+		AllowCredentials: true,
+	}))
 	handlers.RegisterRoutes(r, db)
 
 	log.Println("Server running on :8080")

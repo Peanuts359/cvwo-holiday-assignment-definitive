@@ -4,7 +4,7 @@ const API_URL = "http://localhost:8080";
 
 export const useApi = () => {
     const login = async (data: { username: string; password: string }) => {
-        const response = await axios.post(`${API_URL}/login`, data);
+        const response = await axios.post(`${API_URL}/`, data);
         return response.data;
     };
 
@@ -18,5 +18,10 @@ export const useApi = () => {
         return response.data;
     };
 
-    return { login, register, reset };
+    const menu = async (data: { username: string }) => {
+        const response = await axios.post(`${API_URL}/menu`, data);
+        return response.data;
+    };
+
+    return { login, register, reset, menu };
 };
