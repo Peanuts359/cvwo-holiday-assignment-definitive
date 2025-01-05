@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"net/http"
 
+	"assignment-definitive/backend/utils"
 	"github.com/gin-gonic/gin"
 )
 
@@ -21,9 +22,15 @@ func LoginHandler(c *gin.Context, db *sql.DB) {
 	var storedPassword string
 	err := db.QueryRow("SELECT password FROM users WHERE username = ?", req.Username).Scan(&storedPassword)
 	if err == sql.ErrNoRows || storedPassword != req.Password {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid username or password"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "You entered an invalid username/password"})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Login successful"})
+	token, err := utils.GenerateJWT(req.Username)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"token": token})
 }

@@ -3,7 +3,6 @@ package handlers
 import (
 	"database/sql"
 	"net/http"
-
 	"github.com/gin-gonic/gin"
 )
 
