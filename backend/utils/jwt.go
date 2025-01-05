@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-var jwtSecret = []byte("03ea08**********************f184b4")
+var jwtSecret = []byte("6bb186**********************f4a4bc")
 
 func GenerateJWT(username string) (string, error) {
 	claims := jwt.MapClaims{
@@ -35,4 +35,18 @@ func ValidateJWT(tokenString string) (jwt.MapClaims, error) {
 	}
 
 	return claims, nil
+}
+
+func UsernameFromToken(tokenString string) (string, error) {
+	claims, err := ValidateJWT(tokenString)
+	if err != nil {
+		return "", err
+	}
+
+	username, ok := claims["username"].(string)
+	if !ok {
+		return "", errors.New("username not found in token")
+	}
+
+	return username, nil
 }

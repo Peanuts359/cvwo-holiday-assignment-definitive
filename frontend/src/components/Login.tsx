@@ -13,8 +13,8 @@ const Login: React.FC = () => {
         try {
             const response = await login({ username, password });
             console.log("Login response:", response);
-            if (response && response.data && response.data.token) {
-                const token = response.data.token;
+            if (response && response.token) {
+                const token = response.token;
                 sessionStorage.setItem("token", token);
                 alert("Login successful");
                 navigate("/menu");

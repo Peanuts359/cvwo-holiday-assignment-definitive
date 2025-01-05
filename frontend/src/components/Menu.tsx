@@ -9,11 +9,17 @@ const Menu: React.FC = () => {
     useEffect(() => {
         const fetchUser = async () => {
             try {
+                const token = sessionStorage.getItem("token"); // Get the JWT token
+                if (!token) {
+                    throw new Error("Invalid session. Please log in again.");
+                }
+
                 const response = await axios.get("http://localhost:8080/menu", {
                     headers: {
-                        Username: "testuser",
+                        Authorization: `Bearer ${token}`,
                     },
                 });
+
                 setUsername(response.data.username);
             } catch (error) {
                 console.error("Error fetching user:", error);
@@ -25,6 +31,7 @@ const Menu: React.FC = () => {
     }, [navigate]);
 
     const handleSignOut = () => {
+        sessionStorage.removeItem("token");
         navigate("/");
     };
 
