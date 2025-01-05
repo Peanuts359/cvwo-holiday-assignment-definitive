@@ -11,9 +11,16 @@ const Login: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            await login({ username, password });
-            alert("Login successful");
-            navigate("/menu");
+            const response = await login({ username, password });
+            console.log("Login response:", response);
+            if (response && response.data && response.data.token) {
+                const token = response.data.token;
+                sessionStorage.setItem("token", token);
+                alert("Login successful");
+                navigate("/menu");
+            } else {
+                throw new Error("Unexpected response format from server");
+            }
         } catch (error: any) {
             alert("Error: " + error.response.data.error);
             setPassword("");
