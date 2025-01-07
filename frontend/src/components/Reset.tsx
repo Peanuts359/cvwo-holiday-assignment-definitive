@@ -20,22 +20,59 @@ const Reset: React.FC = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <h1>Reset Password</h1>
-            <input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-            />
-            <input
-                type="password"
-                placeholder="New Password"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-            />
-            <button type="submit">Reset Password</button>
-        </form>
+        <div className="min-h-screen pt-4 pl-4 flex bg-gray-50">
+            <form onSubmit={handleSubmit}>
+                <div className="mb-4">
+                    <h1>Reset Password</h1>
+                </div>
+
+                <div className="mb-4">
+                    <label
+                        htmlFor="email"
+                        className="block text-sm font-medium text-gray-700"
+                    >
+                        Email
+                    </label>
+                    <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="mt-1 p-2 w-full border rounded-md"
+                        required
+                    />
+                </div>
+
+                <div className="mb-4">
+                    <label
+                        htmlFor="new-password"
+                        className="block text-sm font-medium text-gray-700"
+                    >
+                        New Password
+                    </label>
+                    <input
+                        type="password"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        className="mt-1 p-2 w-full border rounded-md"
+                        required
+                    />
+                </div>
+
+
+                <button
+                    type="submit"
+                    className="w-full p-2 bg-blue-500 text-white rounded-md"
+                >
+                    Reset Password
+                </button>
+
+                <div className="mt-4">
+                    <a href="/" className="text-sm text-blue-500 hover:bold">
+                        Return to login page
+                    </a>
+                </div>
+            </form>
+        </div>
     );
 };
 

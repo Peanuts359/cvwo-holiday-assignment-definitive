@@ -36,9 +36,16 @@ const Menu: React.FC = () => {
     };
 
     return (
-        <div>
-            <h1>Welcome, {username || "User"}!</h1>
-            <button onClick={handleSignOut}>Sign Out</button>
+        <div className="min-h-screen flex flex-col bg-gray-50 pt-4 pl-4">
+            <div className="mb-4">
+                <h1>Welcome, {username || "User"}!</h1>
+            </div>
+            <button
+                onClick={handleSignOut}
+                className="w-36 h-12 p-2 bg-red-500 text-white rounded-md"
+            >
+                Sign Out
+            </button>
         </div>
     );
 };

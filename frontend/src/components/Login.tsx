@@ -28,22 +28,65 @@ const Login: React.FC = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <h1>Login</h1>
-            <input
-                type="text"
-                placeholder="Username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-            />
-            <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-            />
-            <button type="submit">Login</button>
-        </form>
+        <div className="min-h-screen flex items-center justify-center bg-gray-50">
+            <form onSubmit={handleSubmit} className="p-8 border rounded shadow-md">
+                <div className="mb-4">
+                    <h1>Login Page</h1>
+                </div>
+                <div className="mb-4">
+                    <label
+                        htmlFor="username"
+                        className="block text-sm font-medium text-gray-700"
+                    >
+                        Username
+                    </label>
+                    <input
+                        type="text"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        className="mt-1 p-2 w-full border rounded-md"
+                        required
+                    />
+                </div>
+
+                <div className="mb-4">
+                    <label
+                        htmlFor="password"
+                        className="block text-sm font-medium text-gray-700"
+                    >
+                        Password
+                    </label>
+                    <input
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="mt-1 p-2 w-full border rounded-md"
+                        required
+                    />
+                </div>
+
+                <div className="mt-2">
+                    <a href="/reset" className="text-sm text-blue-500 hover:bold">
+                        Forgot password?
+                    </a>
+                </div>
+
+                <button
+                    type="submit"
+                    className="w-full p-2 bg-blue-500 text-white rounded-md"
+                >Log In
+                </button>
+
+                <div className="mt-4 text-center">
+                    <span className="text-sm text-gray-600">
+                        New? Sign up&nbsp;
+                    </span>
+                    <a href="/register" className="text-sm text-blue-500 hover:bold">
+                        here
+                    </a>
+                </div>
+            </form>
+        </div>
     );
 };
 
