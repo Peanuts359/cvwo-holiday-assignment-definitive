@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import { useNavigate } from "react-router-dom";
 import Dropdown from "./Dropdown";
+import HomeButton from "./HomeButton";
 import axios from "axios";
 
 const Navbar: React.FC = () => {
@@ -38,11 +39,14 @@ const Navbar: React.FC = () => {
 
     return (
         <nav className="flex items-center justify-between bg-gray-100 p-4 shadow-md">
-            <div className="text-lg font-medium text-gray-700">
-                Signed in as: <span className="font-bold">{username}</span>
+            <div className="flex items-center space-x-2">
+                <HomeButton/>
+                <div className="text-lg font-medium text-gray-700">
+                    Signed in as: <span className="font-bold">{username}</span>
+                </div>
             </div>
 
-            <Dropdown onSignOut={handleSignOut} />
+            <Dropdown onSignOut={handleSignOut}/>
         </nav>
     );
 };
