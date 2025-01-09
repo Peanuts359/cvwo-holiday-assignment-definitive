@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import Navbar from "../ui/Navbar";
 
 const Menu: React.FC = () => {
     const [username, setUsername] = useState<string | null>(null);
@@ -37,15 +38,10 @@ const Menu: React.FC = () => {
 
     return (
         <div className="min-h-screen flex flex-col bg-gray-50 pt-4 pl-4">
-            <div className="mb-4">
-                <h1>Welcome, {username || "User"}!</h1>
-            </div>
-            <button
-                onClick={handleSignOut}
-                className="w-36 h-12 p-2 bg-red-500 text-white rounded-md"
-            >
-                Sign Out
-            </button>
+            <Navbar username={username || "User"} onSignOut={handleSignOut}></Navbar>
+            <main className="p-8">
+                <h1>Wow, such empty</h1>
+            </main>
         </div>
     );
 };
