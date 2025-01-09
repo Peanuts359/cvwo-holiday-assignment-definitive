@@ -23,14 +23,20 @@ const Dropdown: React.FC<dropdownProps> = ({ onSignOut }) => {
             </button>
 
             {isOpen && (
-            <div className="flex flex-col absolute right-0 mt-2 w-40 bg-white border rounded-md shadow-lg z-10">
-                <button
-                    onClick={onSignOut}
-                    className="block w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-500 hover:text-white focus:outline-none"
-                >
-                    Sign Out
-                </button>
-            </div>
+                <div className="flex flex-col absolute right-0 mt-2 w-40 bg-white border rounded-md shadow-lg z-10">
+                    <button
+                        className="block w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-500 hover:text-white focus:outline-none"
+                    >
+                        Create New Post
+                    </button>
+                    <button
+                        onClick={onSignOut}
+                        className="block w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-500 hover:text-white focus:outline-none"
+                    >
+                        Sign Out
+                    </button>
+
+                </div>
             )}
         </div>
     );
