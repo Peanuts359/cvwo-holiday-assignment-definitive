@@ -32,5 +32,14 @@ export const useApi = () => {
         return response.data;
     };
 
-    return { login, register, reset, menu };
+    const create = async (): Promise<any> => {
+        const response: AxiosResponse<any> = await axios.get(`${API_URL}/create`, {
+            headers: {
+                Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+            },
+        });
+        return response.data;
+    };
+
+    return { login, register, reset, menu, create };
 };

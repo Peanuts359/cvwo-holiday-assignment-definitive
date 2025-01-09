@@ -2,9 +2,10 @@ import React, { useState } from "react";
 
 interface dropdownProps {
     onSignOut: () => void;
+    create: () => void;
 }
 
-const Dropdown: React.FC<dropdownProps> = ({ onSignOut }) => {
+const Dropdown: React.FC<dropdownProps> = ({ onSignOut, create }) => {
     const [isOpen, setIsOpen] = useState(false);
 
     const toggleMenu = () => {
@@ -25,6 +26,7 @@ const Dropdown: React.FC<dropdownProps> = ({ onSignOut }) => {
             {isOpen && (
                 <div className="flex flex-col absolute right-0 mt-2 w-40 bg-white border rounded-md shadow-lg z-10">
                     <button
+                        onClick={create}
                         className="block w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-500 hover:text-white focus:outline-none"
                     >
                         Create New Post

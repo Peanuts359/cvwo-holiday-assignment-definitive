@@ -10,4 +10,5 @@ func RegisterRoutes(r *gin.Engine, db *sql.DB) {
 	r.POST("/register", func(c *gin.Context) { RegisterHandler(c, db) })
 	r.POST("/reset", func(c *gin.Context) { ResetHandler(c, db) })
 	r.GET("/menu", func(c *gin.Context) { MenuHandler(c) })
+	r.GET("/create", func(c *gin.Context) { CreateHandler(c) })
 }

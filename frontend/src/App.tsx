@@ -4,6 +4,7 @@ import Login from "./components/Login";
 import Register from "./components/Register";
 import Reset from "./components/Reset";
 import Menu from "./components/Menu"
+import CreatePost from "./components/CreatePost";
 
 const App: React.FC = () => {
   return (
@@ -12,7 +13,8 @@ const App: React.FC = () => {
           <Route path="/" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/reset" element={<Reset />} />
-            <Route path="/menu" element={<Menu />} />
+          <Route path="/menu" element={<Menu />} />
+          <Route path="/create" element={<CreatePost />} />
         </Routes>
       </div>
   );

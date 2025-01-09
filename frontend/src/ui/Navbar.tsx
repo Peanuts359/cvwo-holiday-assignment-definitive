@@ -37,6 +37,10 @@ const Navbar: React.FC = () => {
         navigate("/");
     };
 
+    const redirectCreate = () => {
+        navigate("/create");
+    }
+
     return (
         <nav className="flex items-center justify-between bg-gray-100 p-4 shadow-md">
             <div className="flex items-center space-x-2">
@@ -46,7 +50,7 @@ const Navbar: React.FC = () => {
                 </div>
             </div>
 
-            <Dropdown onSignOut={handleSignOut}/>
+            <Dropdown onSignOut={handleSignOut} create={redirectCreate}/>
         </nav>
     );
 };
