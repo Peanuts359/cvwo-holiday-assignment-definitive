@@ -9,8 +9,9 @@ import (
 )
 
 type Thread struct {
-	Title   string `json:"title"`
-	Content string `json:"content"`
+	Username string `json:"username"`
+	Title    string `json:"title"`
+	Content  string `json:"content"`
 }
 
 func CreateThreadHandler(c *gin.Context, db *sql.DB) {
