@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../ui/Navbar";
 import { useNavigate } from "react-router-dom";
-import axios from "axios"
-
-interface JwtPayload {
-    username: string;
-}
+import axios from "axios";
 
 const CreatePost: React.FC = () => {
     const [title, setTitle] = useState<string>("");

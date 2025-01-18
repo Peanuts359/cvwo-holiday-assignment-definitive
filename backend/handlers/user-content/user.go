@@ -1,4 +1,4 @@
-package user
+package user_content
 
 import (
 	"assignment-definitive/backend/utils"
