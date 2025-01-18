@@ -2,8 +2,8 @@ package handlers
 
 import (
 	"database/sql"
-	"net/http"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 func ResetHandler(c *gin.Context, db *sql.DB) {

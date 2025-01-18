@@ -5,7 +5,7 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
-    _ "modernc.org/sqlite"
+	_ "modernc.org/sqlite"
 
 	"assignment-definitive/backend/handlers"
 	"github.com/gin-contrib/cors"
@@ -19,17 +19,30 @@ func initDB() {
 	if err != nil {
 		log.Fatal("Failed to connect to the database:", err)
 	}
-	schema := `
+	userSchema := `
 	CREATE TABLE IF NOT EXISTS users (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		username TEXT NOT NULL UNIQUE,
 		email TEXT NOT NULL UNIQUE,
 		password TEXT NOT NULL
 	);`
-	_, err = db.Exec(schema)
+	_, err = db.Exec(userSchema)
 	if err != nil {
-		log.Fatal("Failed to execute schema:", err)
+		log.Fatal("Failed to execute user schema:", err)
 	}
+
+	threadSchema := `
+	CREATE TABLE IF NOT EXISTS threads (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+	    username TEXT NOT NULL,
+		title TEXT NOT NULL,
+        content TEXT NOT NULL
+	);`
+	_, err = db.Exec(threadSchema)
+	if err != nil {
+		log.Fatal("Failed to execute thread schema:", err)
+	}
+
 }
 
 func main() {
