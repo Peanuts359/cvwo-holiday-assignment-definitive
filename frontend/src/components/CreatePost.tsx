@@ -44,10 +44,35 @@ const CreatePost: React.FC = () => {
 
 
 
-    const handleSubmit = () => {
-        alert(`Posted by: ${username}\nTitle: ${title}\nPost content: ${text}`);
-        navigate("/menu");
-    };
+    const handleSubmit = async () => {
+        const token = sessionStorage.getItem("token");
+        if (!token) {
+            alert("You must be logged in to create a post.");
+            return;
+        }
+
+        try {
+            const response = await fetch("http://localhost:8080/create-thread", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ title, content: text }),
+            });
+
+            if (response.ok) {
+                alert("Post created successfully!");
+                navigate("/menu");
+            } else {
+                const errorData = await response.json();
+                alert(`Error: ${errorData.error}`);
+            }
+        } catch (error) {
+            console.error("Error creating thread:", error);
+            alert("An error occurred while creating the post.");
+        }
+    }
 
     return (
         <div className="min-h-screen flex flex-col bg-gray-50 pt-4 pl-4">
