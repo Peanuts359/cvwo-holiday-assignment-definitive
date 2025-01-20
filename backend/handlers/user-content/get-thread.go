@@ -1,15 +1,13 @@
 package user_content
 
 import (
-	"assignment-definitive/backend/utils"
 	"database/sql"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
-func GetThreadsHandler(c *gin.Context) {
+func GetThreadsHandler(c *gin.Context, db *sql.DB) {
 	query := "SELECT id, username, title, content FROM threads ORDER BY id DESC"
-	db := utils.GetDB()
 	rows, err := db.Query(query)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch threads"})
@@ -20,8 +18,7 @@ func GetThreadsHandler(c *gin.Context) {
 	var threads []Thread
 	for rows.Next() {
 		var thread Thread
-		var id int
-		err := rows.Scan(&id, &thread.Username, &thread.Title, &thread.Content)
+		err := rows.Scan(&thread.ID, &thread.Username, &thread.Title, &thread.Content)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to parse threads"})
 			return

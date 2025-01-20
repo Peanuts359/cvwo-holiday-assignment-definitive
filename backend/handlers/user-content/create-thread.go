@@ -9,6 +9,7 @@ import (
 )
 
 type Thread struct {
+	ID       int    `json:"id"`
 	Username string `json:"username"`
 	Title    string `json:"title"`
 	Content  string `json:"content"`

@@ -47,7 +47,7 @@ export const useApi = () => {
                 Authorization: `Bearer ${sessionStorage.getItem("token")}`,
             },
         });
-        return response.data; // Return the list of threads
+        return response.data;
     };
 
     const deleteThread = async (id: number): Promise<any> => {
@@ -56,7 +56,7 @@ export const useApi = () => {
                 Authorization: `Bearer ${sessionStorage.getItem("token")}`,
             },
         });
-        return response.data; // Confirm thread deletion
+        return response.data;
     };
 
     return { login, register, reset, menu, createThread, getThreads, deleteThread };

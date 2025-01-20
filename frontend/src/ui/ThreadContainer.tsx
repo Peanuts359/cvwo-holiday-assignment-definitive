@@ -17,9 +17,13 @@ const ThreadContainer: React.FC<ThreadProps> = ({ id, username, title, content, 
     }
     return (
         <div className="border border-gray-300 p-4 rounded-lg shadow-md relative">
-            <h2 className="font-bold text-lg">{title}</h2>
-            <p className="text-sm text-gray-500">Posted by: {username}</p>
-            <p className="mt-2">{content}</p>
+
+            <h2 className="font-bold text-lg mb-2">{title}</h2>
+
+            <p className="text-sm text-gray-500 mb-4">Posted by: {username}</p>
+
+            <p className="text-base mb-4">{content}</p>
+
             <button
                 onClick={handleDelete}
                 className="absolute bottom-2 right-2 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"

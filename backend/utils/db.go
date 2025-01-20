@@ -16,7 +16,7 @@ var (
 func GetDB() *sql.DB {
 	once.Do(func() {
 		var err error
-		db, err = sql.Open("sqlite3", "./database.db")
+		db, err = sql.Open("sqlite", "../database.db")
 		if err != nil {
 			log.Fatalf("Failed to connect to the database: %v", err)
 		}

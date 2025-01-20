@@ -17,9 +17,11 @@ const Menu: React.FC = () => {
         const fetchThreads = async () => {
             try {
                 const response = await axios.get("http://localhost:8080/threads");
-                setThreads(response.data);
+                console.log("Fetched threads:", response.data);
+                setThreads(response.data || []);
             } catch (error) {
                 console.error("Error fetching threads:", error);
+                setThreads([]);
             }
         };
 
@@ -44,8 +46,8 @@ const Menu: React.FC = () => {
             <Navbar />
             <main className="p-8">
                 <h1 className="text-2xl font-bold mb-4">All Threads</h1>
-                {threads.length === 0 ? (
-                    <p>No threads available</p>
+                {!threads || threads.length === 0 ? (
+                    <p>Wow, such empty</p>
                 ) : (
                     <ul className="space-y-4">
                         {threads.map((thread) => (
