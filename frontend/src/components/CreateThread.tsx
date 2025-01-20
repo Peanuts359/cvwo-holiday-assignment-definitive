@@ -47,7 +47,7 @@ const CreateThread: React.FC = () => {
     const handleSubmit = async () => {
         const token = sessionStorage.getItem("token");
         if (!token) {
-            alert("You must be logged in to create a post.");
+            alert("You must be logged in to create a thread.");
             return;
         }
 
@@ -62,7 +62,7 @@ const CreateThread: React.FC = () => {
             });
 
             if (response.ok) {
-                alert("Post created successfully!");
+                alert("Thread created successfully!");
                 navigate("/menu");
             } else {
                 const errorData = await response.json();
@@ -70,7 +70,7 @@ const CreateThread: React.FC = () => {
             }
         } catch (error) {
             console.error("Error creating thread:", error);
-            alert("An error occurred while creating the post.");
+            alert("An error occurred while creating the thread.");
         }
     }
 
@@ -78,8 +78,8 @@ const CreateThread: React.FC = () => {
         <div className="min-h-screen flex flex-col bg-gray-50 pt-4 pl-4">
             <Navbar />
             <main className="p-8 flex flex-col items-center">
-                <h1 className="text-2xl font-bold mb-4">Create a Post</h1>
-                <h2 className="text-lg text-gray-600 mb-6">Enter your post content here. Currently only supports
+                <h1 className="text-2xl font-bold mb-4">Create a Thread</h1>
+                <h2 className="text-lg text-gray-600 mb-6">Enter your thread's content here. Currently only supports
                     text.</h2>
                 <div className="relative w-3/4 mb-4">
                     <textarea
