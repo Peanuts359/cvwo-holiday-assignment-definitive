@@ -13,6 +13,7 @@ const Login: React.FC = () => {
         try {
             const response = await login({ username, password });
             console.log("Login response:", response);
+
             if (response && response.token) {
                 const token = response.token;
                 sessionStorage.setItem("token", token);
@@ -22,7 +23,10 @@ const Login: React.FC = () => {
                 throw new Error("Unexpected response format from server");
             }
         } catch (error: any) {
-            alert("Error: " + error.response.data.error);
+            console.error("Login error:", error);
+            const errorMessage =
+                error.response?.data?.error || error.message || "An unexpected error occurred.";
+            alert("Error: " + errorMessage);
             setPassword("");
         }
     };

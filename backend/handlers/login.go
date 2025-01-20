@@ -21,8 +21,17 @@ func LoginHandler(c *gin.Context, db *sql.DB) {
 
 	var storedPassword string
 	err := db.QueryRow("SELECT password FROM users WHERE username = ?", req.Username).Scan(&storedPassword)
-	if err == sql.ErrNoRows || storedPassword != req.Password {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "You entered an invalid username/password"})
+	if err != nil {
+		if err == sql.ErrNoRows {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "The username entered is invalid"})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Database error"})
+		return
+	}
+
+	if storedPassword != req.Password {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "The password entered is incorrect"})
 		return
 	}
 
