@@ -32,7 +32,7 @@ export const useApi = () => {
         return response.data;
     };
 
-    const create = async (): Promise<any> => {
+    const createThread = async (): Promise<any> => {
         const response: AxiosResponse<any> = await axios.get(`${API_URL}/create`, {
             headers: {
                 Authorization: `Bearer ${sessionStorage.getItem("token")}`,
@@ -41,5 +41,23 @@ export const useApi = () => {
         return response.data;
     };
 
-    return { login, register, reset, menu, create };
+    const getThreads = async (): Promise<any> => {
+        const response: AxiosResponse<any> = await axios.get(`${API_URL}/threads`, {
+            headers: {
+                Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+            },
+        });
+        return response.data;
+    };
+
+    const deleteThread = async (id: number): Promise<any> => {
+        const response: AxiosResponse<any> = await axios.delete(`${API_URL}/threads/${id}`, {
+            headers: {
+                Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+            },
+        });
+        return response.data;
+    };
+
+    return { login, register, reset, menu, createThread, getThreads, deleteThread };
 };

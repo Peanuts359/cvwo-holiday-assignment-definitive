@@ -16,7 +16,7 @@ const Navbar: React.FC = () => {
                     throw new Error("Invalid session. Please log in again.");
                 }
 
-                const response = await axios.get("http://localhost:8080/menu", {
+                const response = await axios.get("http://localhost:8080/username", {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },

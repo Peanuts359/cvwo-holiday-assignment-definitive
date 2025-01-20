@@ -1,4 +1,4 @@
-package handlers
+package user_content
 
 import (
 	"assignment-definitive/backend/utils"
@@ -7,12 +7,7 @@ import (
 	"strings"
 )
 
-type Thread struct {
-	Title   string `json:"title"`
-	Content string `json:"content"`
-}
-
-func CreateHandler(c *gin.Context) {
+func UsernameHandler(c *gin.Context) {
 	authHeader := c.GetHeader("Authorization")
 	if authHeader == "" {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Missing Authorization header"})
@@ -23,11 +18,6 @@ func CreateHandler(c *gin.Context) {
 	username, err := utils.UsernameFromToken(tokenString)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
-		return
-	}
-
-	if username == "" {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Failed to fetch username"})
 		return
 	}
 
