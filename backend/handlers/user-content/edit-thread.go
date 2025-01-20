@@ -33,6 +33,11 @@ func EditThreadHandler(c *gin.Context, db *sql.DB) {
 		return
 	}
 
+	if strings.TrimSpace(newContent) == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Content cannot be empty"})
+		return
+	}
+
 	// failsafe: make sure that only the poster can edit a thread under their username
 	var threadOwner string
 	err = db.QueryRow("SELECT username FROM threads WHERE id = ?", id).Scan(&threadOwner)
@@ -52,9 +57,15 @@ func EditThreadHandler(c *gin.Context, db *sql.DB) {
 
 	// continued edit logic
 	query := "UPDATE threads SET content = ? WHERE id = ?"
-	_, err = db.Exec(query, newContent, id)
+	res, err := db.Exec(query, newContent, id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to edit thread"})
+		return
+	}
+
+	rowsAffected, _ := res.RowsAffected()
+	if rowsAffected == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Thread not found or no changes detected"})
 		return
 	}
 

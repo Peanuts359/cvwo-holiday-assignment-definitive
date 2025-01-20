@@ -15,6 +15,16 @@ const ThreadContainer: React.FC<ThreadProps> = ({ id, username, title, content, 
     const [newContent, setNewContent] = useState(content);
 
     const handleSave = () => {
+        if (newContent.trim() === "") {
+            alert("Content cannot be empty.");
+            return;
+        }
+
+        if (newContent === content) {
+            alert("No changes detected.");
+            setIsEditing(false);
+            return;
+        }
         onEdit(id, newContent);
         setIsEditing(false);
     };
