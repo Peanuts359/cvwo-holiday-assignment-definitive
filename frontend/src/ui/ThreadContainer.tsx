@@ -5,10 +5,11 @@ interface ThreadProps {
     username: string;
     title: string;
     content: string;
+    loggedInUser: string;
     onDelete: (id: number) => void;
 }
 
-const ThreadContainer: React.FC<ThreadProps> = ({ id, username, title, content, onDelete }) => {
+const ThreadContainer: React.FC<ThreadProps> = ({ id, username, title, content, loggedInUser, onDelete }) => {
     const handleDelete = () => {
         console.log("Thread ID to delete:", id);
         if (window.confirm("Deleted posts cannot be restored. Do you really want to delete this?")) {
@@ -24,12 +25,14 @@ const ThreadContainer: React.FC<ThreadProps> = ({ id, username, title, content, 
 
             <p className="text-base mb-4">{content}</p>
 
-            <button
-                onClick={handleDelete}
-                className="absolute bottom-2 right-2 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
-            >
-                Delete
-            </button>
+            {loggedInUser === username && (
+                <button
+                    onClick={handleDelete}
+                    className="absolute bottom-2 right-2 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
+                >
+                    Delete
+                </button>
+            )}
         </div>
     );
 };

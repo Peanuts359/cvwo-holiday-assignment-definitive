@@ -12,8 +12,28 @@ interface Thread {
 
 const Menu: React.FC = () => {
     const [threads, setThreads] = useState<Thread[]>([]);
+    const [loggedInUser, setLoggedInUser] = useState<string>("");
 
     useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const token = sessionStorage.getItem("token"); // Get the JWT token
+                if (!token) {
+                    throw new Error("Invalid session. Please log in again.");
+                }
+
+                const response = await axios.get("http://localhost:8080/username", {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                setLoggedInUser(response.data.username);
+            } catch (error) {
+                console.error("Error fetching user:", error);
+            }
+        };
+
         const fetchThreads = async () => {
             try {
                 const response = await axios.get("http://localhost:8080/threads");
@@ -25,6 +45,7 @@ const Menu: React.FC = () => {
             }
         };
 
+        fetchUser();
         fetchThreads();
     }, []);
 
@@ -57,6 +78,7 @@ const Menu: React.FC = () => {
                                 username={thread.username}
                                 title={thread.title}
                                 content={thread.content}
+                                loggedInUser={loggedInUser}
                                 onDelete={handleDelete}
                             />
                         ))}
