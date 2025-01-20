@@ -7,16 +7,15 @@ interface ThreadProps {
     content: string;
     loggedInUser: string;
     onDelete: (id: number) => void;
-    onEdit: (id: number, newTitle: string, newContent: string) => void;
+    onEdit: (id: number, newContent: string) => void;
 }
 
 const ThreadContainer: React.FC<ThreadProps> = ({ id, username, title, content, loggedInUser, onDelete, onEdit }) => {
     const [isEditing, setIsEditing] = useState(false);
-    const [newTitle, setNewTitle] = useState(title);
     const [newContent, setNewContent] = useState(content);
 
     const handleSave = () => {
-        onEdit(id, newTitle, newContent);
+        onEdit(id, newContent);
         setIsEditing(false);
     };
 
@@ -30,12 +29,8 @@ const ThreadContainer: React.FC<ThreadProps> = ({ id, username, title, content, 
         <div className="border border-gray-300 p-4 rounded-lg shadow-md relative">
             { isEditing ? (
                 <div>
-                    <input
-                        className="w-full p-2 border rounded-md mb-2"
-                        value={newTitle}
-                        onChange={(e) => setNewTitle(e.target.value)}
-                        placeholder="Edit title"
-                    />
+                    <h2 className="font-bold text-lg mb-2">{title}</h2>
+                    <p className="text-sm text-gray-500 mb-4">Posted by: {username}</p>
                     <textarea
                         className="w-full p-2 border rounded-md"
                         value={newContent}

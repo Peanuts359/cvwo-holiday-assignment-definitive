@@ -26,12 +26,9 @@ func EditThreadHandler(c *gin.Context, db *sql.DB) {
 		return
 	}
 
-	var requestBody struct {
-		Title   string `json:"title"`
-		Content string `json:"content"`
-	}
+	var newContent string
 
-	if err := c.ShouldBindJSON(&requestBody); err != nil {
+	if err := c.ShouldBindJSON(&newContent); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
 		return
 	}
@@ -54,8 +51,8 @@ func EditThreadHandler(c *gin.Context, db *sql.DB) {
 	}
 
 	// continued edit logic
-	query := "UPDATE threads SET title = ?, content = ? WHERE id = ?"
-	_, err = db.Exec(query, requestBody.Title, requestBody.Content, id)
+	query := "UPDATE threads SET content = ? WHERE id = ?"
+	_, err = db.Exec(query, newContent, id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to edit thread"})
 		return

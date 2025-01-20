@@ -62,24 +62,24 @@ const Menu: React.FC = () => {
         }
     };
 
-    const handleEdit = async (id: number, newTitle: string, newContent: string) => {
+    const handleEdit = async (id: number, newContent: string) => {
         try {
             const response = await axios.put(
                 `http://localhost:8080/threads/${id}`,
-                { title: newTitle, content: newContent },
+                { content: newContent },
                 { headers: { Authorization: `Bearer ${sessionStorage.getItem("token")}` } }
             );
             if (response.status === 200) {
                 setThreads(
                     threads.map((thread) =>
-                        thread.id === id ? { ...thread, title: newTitle, content: newContent } : thread
+                        thread.id === id ? { ...thread, content: newContent } : thread
                     )
                 );
                 alert("Thread edited successfully.");
             }
         } catch (error) {
             console.error("Error editing thread:", error);
-            alert("An error occurred while deleting the thread.");
+            alert("An error occurred while editing the thread.");
         }
     };
 
