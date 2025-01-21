@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func DeleteThreadHandler(c *gin.Context, db *sql.DB) {
+func EditThreadHandler(c *gin.Context, db *sql.DB) {
 	tokenString := c.GetHeader("Authorization")
 	if tokenString == "" {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Missing Authorization header"})
@@ -26,7 +26,19 @@ func DeleteThreadHandler(c *gin.Context, db *sql.DB) {
 		return
 	}
 
-	// failsafe: make sure that only the poster can delete a thread under their username
+	var newContent string
+
+	if err := c.ShouldBindJSON(&newContent); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
+		return
+	}
+
+	if strings.TrimSpace(newContent) == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Content cannot be empty"})
+		return
+	}
+
+	// failsafe: make sure that only the poster can edit a thread under their username
 	var threadOwner string
 	err = db.QueryRow("SELECT username FROM threads WHERE id = ?", id).Scan(&threadOwner)
 	if err != nil {
@@ -39,17 +51,23 @@ func DeleteThreadHandler(c *gin.Context, db *sql.DB) {
 	}
 
 	if threadOwner != username {
-		c.JSON(http.StatusForbidden, gin.H{"error": "You are not authorized to delete this thread"})
+		c.JSON(http.StatusForbidden, gin.H{"error": "You are not authorized to edit this thread"})
 		return
 	}
 
-	// continued deletion logic
-	query := "DELETE FROM threads WHERE id = ?"
-	_, err = db.Exec(query, id)
+	// continued edit logic
+	query := "UPDATE threads SET content = ? WHERE id = ?"
+	res, err := db.Exec(query, newContent, id)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete thread"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to edit thread"})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Thread deleted successfully"})
+	rowsAffected, _ := res.RowsAffected()
+	if rowsAffected == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Thread not found or no changes detected"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Thread edited successfully"})
 }

@@ -12,8 +12,28 @@ interface Thread {
 
 const Menu: React.FC = () => {
     const [threads, setThreads] = useState<Thread[]>([]);
+    const [loggedInUser, setLoggedInUser] = useState<string>("");
 
     useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const token = sessionStorage.getItem("token"); // Get the JWT token
+                if (!token) {
+                    throw new Error("Invalid session. Please log in again.");
+                }
+
+                const response = await axios.get("http://localhost:8080/username", {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                setLoggedInUser(response.data.username);
+            } catch (error) {
+                console.error("Error fetching user:", error);
+            }
+        };
+
         const fetchThreads = async () => {
             try {
                 const response = await axios.get("http://localhost:8080/threads");
@@ -25,6 +45,7 @@ const Menu: React.FC = () => {
             }
         };
 
+        fetchUser();
         fetchThreads();
     }, []);
 
@@ -37,7 +58,28 @@ const Menu: React.FC = () => {
             }
         } catch (error) {
             console.error("Error deleting thread:", error);
-            alert("An error occurred while deleting the post.");
+            alert("An error occurred while deleting the thread.");
+        }
+    };
+
+    const handleEdit = async (id: number, newContent: string) => {
+        try {
+            const response = await axios.put(
+                `http://localhost:8080/threads/${id}`,
+                { content: newContent },
+                { headers: { Authorization: `Bearer ${sessionStorage.getItem("token")}` } }
+            );
+            if (response.status === 200) {
+                setThreads(
+                    threads.map((thread) =>
+                        thread.id === id ? { ...thread, content: newContent } : thread
+                    )
+                );
+                alert("Thread edited successfully.");
+            }
+        } catch (error) {
+            console.error("Error editing thread:", error);
+            alert("An error occurred while editing the thread.");
         }
     };
 
@@ -57,7 +99,9 @@ const Menu: React.FC = () => {
                                 username={thread.username}
                                 title={thread.title}
                                 content={thread.content}
+                                loggedInUser={loggedInUser}
                                 onDelete={handleDelete}
+                                onEdit={handleEdit}
                             />
                         ))}
                     </ul>

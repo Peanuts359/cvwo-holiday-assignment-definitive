@@ -8,8 +8,10 @@ export const useApi = () => {
             const response: AxiosResponse<any> = await axios.post(`${API_URL}/`, data);
             return response.data; // Return the token or response body
         } catch (error: any) {
-            console.error("Login API error:", error);
-            throw error.response?.data?.error || "An unexpected error occurred.";
+            if (error.response?.data?.error) {
+                throw new Error(error.response.data.error);
+            }
+            throw new Error("An unexpected error occurred.");
         }
     };
 
