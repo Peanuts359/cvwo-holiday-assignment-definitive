@@ -4,13 +4,14 @@ interface ThreadProps {
     id: number;
     username: string;
     title: string;
+    tags: string | null;
     content: string;
     loggedInUser: string;
     onDelete: (id: number) => void;
     onEdit: (id: number, newContent: string) => void;
 }
 
-const ThreadContainer: React.FC<ThreadProps> = ({ id, username, title, content, loggedInUser, onDelete, onEdit }) => {
+const ThreadContainer: React.FC<ThreadProps> = ({ id, username, title, tags, content, loggedInUser, onDelete, onEdit }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [newContent, setNewContent] = useState(content);
 
@@ -41,6 +42,15 @@ const ThreadContainer: React.FC<ThreadProps> = ({ id, username, title, content, 
                 <div>
                     <h2 className="font-bold text-lg mb-2">{title}</h2>
                     <p className="text-sm text-gray-500 mb-4">Posted by: {username}</p>
+                    <p className="text-sm text-gray-500">
+                        Tags: {tags ? tags.split(",").map(tag => (
+                        <span key={tag} className="inline-block bg-gray-200 rounded-full px-2 py-1 text-xs text-gray-700 mr-2">
+                        {tag.trim()}
+                        </span>
+                        )) : ""}
+                    </p>
+
+                    <h3>Editing thread content</h3>
                     <textarea
                         className="w-full p-2 border rounded-md"
                         value={newContent}
@@ -67,6 +77,14 @@ const ThreadContainer: React.FC<ThreadProps> = ({ id, username, title, content, 
                 <>
                     <h2 className="font-bold text-lg mb-2">{title}</h2>
                     <p className="text-sm text-gray-500 mb-4">Posted by: {username}</p>
+                    <p className="text-sm text-gray-500">
+                        Tags: {tags ? tags.split(",").map(tag => (
+                        <span key={tag}
+                              className="inline-block bg-gray-200 rounded-full px-2 py-1 text-xs text-gray-700 mr-2">
+                            {tag.trim()}
+                        </span>
+                        )) : ""}
+                    </p>
                     <p className="text-base mb-4">{content}</p>
                 </>
             )}

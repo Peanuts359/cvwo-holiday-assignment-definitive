@@ -6,6 +6,7 @@ import axios from "axios";
 const CreateThread: React.FC = () => {
     const [title, setTitle] = useState<string>("");
     const [text, setText] = useState<string>("");
+    const [tags, setTags] = useState<string>("");
     const [username, setUsername] = useState<string>("Anonymous");
     const navigate = useNavigate();
 
@@ -42,6 +43,10 @@ const CreateThread: React.FC = () => {
         setText(event.target.value);
     };
 
+    const handleTagsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setTags(event.target.value);
+    };
+
 
 
     const handleSubmit = async () => {
@@ -58,7 +63,7 @@ const CreateThread: React.FC = () => {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify({ title, content: text }),
+                body: JSON.stringify({ title, content: text, tags: tags.trim() === "" ? null : tags }),
             });
 
             if (response.ok) {
@@ -87,6 +92,15 @@ const CreateThread: React.FC = () => {
                         onChange={handleTitleChange}
                         className="w-full h-12 p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         placeholder="Enter your post title (max 100 characters)"
+                    />
+                </div>
+                <div className="relative w-3/4 mb-4">
+                    <input
+                        type="text"
+                        value={tags}
+                        onChange={handleTagsChange}
+                        className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="Enter tags (comma-separated, e.g., tag1, tag2, tag3)"
                     />
                 </div>
                 <div className="relative h-3/4 w-3/4 mb-6">
