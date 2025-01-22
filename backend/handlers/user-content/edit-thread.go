@@ -20,7 +20,7 @@ func EditThreadHandler(c *gin.Context, db *sql.DB) {
 		return
 	}
 
-	threadID := c.Param("id")
+	threadID := c.Param("thread_id")
 	if threadID == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Thread ID is required"})
 		return

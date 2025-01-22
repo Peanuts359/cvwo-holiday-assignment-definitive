@@ -9,7 +9,7 @@ import (
 )
 
 func CreateCommentHandler(c *gin.Context, db *sql.DB) {
-	threadID := c.Param("id")
+	threadID := c.Param("thread_id")
 
 	var req struct {
 		Content string `json:"content"`

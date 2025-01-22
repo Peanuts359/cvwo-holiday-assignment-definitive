@@ -4,11 +4,12 @@ import axios from "axios";
 import ThreadContainer from "../ui/ThreadContainer";
 
 interface Thread {
-    id: number;
+    thread_id: number;
     username: string;
     title: string;
     tags: string | null;
     content: string;
+    commentCount: number;
 }
 
 const Menu: React.FC = () => {
@@ -54,7 +55,7 @@ const Menu: React.FC = () => {
         try {
             const response = await axios.delete(`http://localhost:8080/threads/${id}`);
             if (response.status === 200) {
-                setThreads(threads.filter((thread) => thread.id !== id));
+                setThreads(threads.filter((thread) => thread.thread_id !== id));
                 alert("Thread deleted successfully.");
             }
         } catch (error) {
@@ -73,7 +74,7 @@ const Menu: React.FC = () => {
             if (response.status === 200) {
                 setThreads(
                     threads.map((thread) =>
-                        thread.id === id ? { ...thread, content: newContent } : thread
+                        thread.thread_id === id ? { ...thread, content: newContent } : thread
                     )
                 );
                 alert("Thread edited successfully.");
@@ -93,19 +94,23 @@ const Menu: React.FC = () => {
                     <p>Wow, such empty</p>
                 ) : (
                     <ul className="space-y-4">
-                        {threads.map((thread) => (
-                            <ThreadContainer
-                                key={thread.id}
-                                id={thread.id}
-                                username={thread.username}
-                                title={thread.title}
-                                tags={thread.tags}
-                                content={thread.content}
-                                loggedInUser={loggedInUser}
-                                onDelete={handleDelete}
-                                onEdit={handleEdit}
-                            />
-                        ))}
+                        {threads.map((thread) => {
+                            console.log("Thread passed to ThreadContainer:", thread);
+                            return (
+                                <ThreadContainer
+                                    key={thread.thread_id}
+                                    id={thread.thread_id}
+                                    username={thread.username}
+                                    title={thread.title}
+                                    tags={thread.tags}
+                                    content={thread.content}
+                                    commentCount={thread.commentCount}
+                                    loggedInUser={loggedInUser}
+                                    onDelete={handleDelete}
+                                    onEdit={handleEdit}
+                                />
+                            );
+                        })}
                     </ul>
                 )}
             </main>

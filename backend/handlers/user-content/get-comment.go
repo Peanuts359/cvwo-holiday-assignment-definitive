@@ -8,12 +8,12 @@ import (
 
 func GetCommentsHandler(c *gin.Context, db *sql.DB) {
 	var comment struct {
-		ID       int    `json:"id"`
+		ID       int    `json:"comment_id"`
 		Username string `json:"username"`
 		Content  string `json:"content"`
 	}
 
-	threadID := c.Param("id")
+	threadID := c.Param("thread_id")
 
 	rows, err := db.Query("SELECT id, username, content FROM comments WHERE thread_id = ?", threadID)
 	if err != nil {
@@ -23,7 +23,7 @@ func GetCommentsHandler(c *gin.Context, db *sql.DB) {
 	defer rows.Close()
 
 	var comments []struct {
-		ID       int    `json:"id"`
+		ID       int    `json:"comment_id"`
 		Username string `json:"username"`
 		Content  string `json:"content"`
 	}

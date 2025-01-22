@@ -7,10 +7,10 @@ import (
 )
 
 func GetThreadDetailsHandler(c *gin.Context, db *sql.DB) {
-	threadID := c.Param("id")
+	threadID := c.Param("thread_id")
 
 	var thread struct {
-		ID       int    `json:"id"`
+		ID       int    `json:"thread_id"`
 		Username string `json:"username"`
 		Title    string `json:"title"`
 		Content  string `json:"content"`
