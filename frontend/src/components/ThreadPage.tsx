@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../ui/Navbar";
+import CommentContainer from "../ui/CommentContainer";
 
 interface Comment {
     id: number;
@@ -15,6 +16,7 @@ const ThreadPage: React.FC = () => {
     const [thread, setThread] = useState<any>(null);
     const [comments, setComments] = useState<Comment[]>([]);
     const [newComment, setNewComment] = useState<string>("");
+    const [loggedInUser, setLoggedInUser] = useState<string>("");
 
     useEffect(() => {
         const fetchThread = async () => {
@@ -28,7 +30,24 @@ const ThreadPage: React.FC = () => {
                 console.error("Error fetching thread details:", error);
             }
         };
+
+        const fetchLoggedInUser = async () => {
+            try {
+                const token = sessionStorage.getItem("token");
+                if (!token) return;
+
+                const response = await axios.get("http://localhost:8080/username", {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                setLoggedInUser(response.data.username);
+            } catch (error) {
+                console.error("Error fetching logged-in user:", error);
+            }
+        };
         fetchThread();
+        fetchLoggedInUser();
     }, [thread_id]);
 
     const handleAddComment = async () => {
@@ -61,6 +80,64 @@ const ThreadPage: React.FC = () => {
         }
     };
 
+    const handleEditComment = async (commentId: number, newContent: string) => {
+        const token = sessionStorage.getItem("token");
+        if (!token) {
+            alert("You must be logged in to edit comments.");
+            return;
+        }
+
+        try {
+            const response = await axios.put(
+                `http://localhost:8080/comments/${commentId}`,
+                { content: newContent },
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+
+            if (response.status === 200) {
+                setComments(
+                    comments.map((comment) =>
+                        comment.id === commentId
+                            ? { ...comment, content: newContent }
+                            : comment
+                    )
+                );
+                alert("Comment edited successfully!");
+            }
+        } catch (error) {
+            console.error("Error editing comment:", error);
+            alert("An error occurred while editing the comment.");
+        }
+    };
+
+    const handleDeleteComment = async (commentId: number) => {
+        const token = sessionStorage.getItem("token");
+        if (!token) {
+            alert("You must be logged in to delete comments.");
+            return;
+        }
+
+        if (!window.confirm("Deleted comments cannot be restored. Do you want to proceed?")) {
+            return;
+        }
+
+        try {
+            const response = await axios.delete(
+                `http://localhost:8080/comments/${commentId}`,
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+
+            if (response.status === 200) {
+                setComments(comments.filter((comment) => comment.id !== commentId));
+                alert("Comment deleted successfully.");
+            }
+        } catch (error) {
+            console.error("Error deleting comment:", error);
+            alert("An error occurred while deleting the comment.");
+        }
+    };
+
+
     if (!thread) return <div>Loading...</div>;
 
     return (
@@ -75,12 +152,19 @@ const ThreadPage: React.FC = () => {
                     <div>
                         <h2 className="text-lg font-bold">Comments: {comments.length}</h2>
                         {comments.length > 0 ? (
-                            comments.map((comment) => (
-                                <div key={comment.id} className="border border-gray-300 rounded-lg p-4 mb-4">
-                                    <p className="text-sm font-bold">{comment.username}</p>
-                                    <p>{comment.content}</p>
-                                </div>
-                            ))
+                            <div className="space-y-4">
+                                {comments.map((comment) => (
+                                    <CommentContainer
+                                        key={comment.id}
+                                        id={comment.id}
+                                        username={comment.username}
+                                        content={comment.content}
+                                        loggedInUser={loggedInUser}
+                                        onEdit={handleEditComment}
+                                        onDelete={handleDeleteComment}
+                                    />
+                                ))}
+                            </div>
                         ) : (
                             <p>No comments yet. Be the first to comment!</p>
                         )}
