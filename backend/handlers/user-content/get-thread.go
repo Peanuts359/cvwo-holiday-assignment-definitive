@@ -7,18 +7,23 @@ import (
 )
 
 func GetThreadsHandler(c *gin.Context, db *sql.DB) {
-	query := "SELECT id, username, title, content FROM threads ORDER BY id DESC"
-	rows, err := db.Query(query)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch threads"})
-		return
+	searchTag := c.Query("tag")
+	var rows *sql.Rows
+	var err error
+
+	if searchTag != "" {
+		query := "SELECT id, username, title, content, tags FROM threads WHERE tags LIKE ?"
+		rows, err = db.Query(query, "%"+searchTag+"%")
+	} else {
+		query := "SELECT id, username, title, content, IFNULL(tags, '') FROM threads"
+		rows, err = db.Query(query)
 	}
 	defer rows.Close()
 
 	var threads []Thread
 	for rows.Next() {
 		var thread Thread
-		err := rows.Scan(&thread.ID, &thread.Username, &thread.Title, &thread.Content)
+		err = rows.Scan(&thread.ID, &thread.Username, &thread.Title, &thread.Content, &thread.Tags)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to parse threads"})
 			return

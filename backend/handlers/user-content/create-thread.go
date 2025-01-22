@@ -9,10 +9,11 @@ import (
 )
 
 type Thread struct {
-	ID       int    `json:"id"`
-	Username string `json:"username"`
-	Title    string `json:"title"`
-	Content  string `json:"content"`
+	ID       int     `json:"id"`
+	Username string  `json:"username"`
+	Title    string  `json:"title"`
+	Content  string  `json:"content"`
+	Tags     *string `json:"tags"`
 }
 
 func CreateThreadHandler(c *gin.Context, db *sql.DB) {
@@ -40,8 +41,13 @@ func CreateThreadHandler(c *gin.Context, db *sql.DB) {
 		return
 	}
 
-	query := "INSERT INTO threads (username, title, content) VALUES (?, ?, ?)"
-	_, err = db.Exec(query, username, thread.Title, thread.Content)
+	tags := ""
+	if thread.Tags != nil {
+		tags = *thread.Tags
+	}
+
+	query := "INSERT INTO threads (username, title, content, tags) VALUES (?, ?, ?, ?)"
+	_, err = db.Exec(query, username, thread.Title, thread.Content, tags)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create thread"})
 		return

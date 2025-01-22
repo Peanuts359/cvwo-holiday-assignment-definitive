@@ -7,6 +7,7 @@ interface Thread {
     id: number;
     username: string;
     title: string;
+    tags: string | null;
     content: string;
 }
 
@@ -98,6 +99,7 @@ const Menu: React.FC = () => {
                                 id={thread.id}
                                 username={thread.username}
                                 title={thread.title}
+                                tags={thread.tags}
                                 content={thread.content}
                                 loggedInUser={loggedInUser}
                                 onDelete={handleDelete}

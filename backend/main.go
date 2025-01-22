@@ -36,7 +36,8 @@ func initDB() {
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 	    username TEXT NOT NULL,
 		title TEXT NOT NULL,
-        content TEXT NOT NULL
+        content TEXT NOT NULL,
+	    tags TEXT NULL
 	);`
 	_, err = db.Exec(threadSchema)
 	if err != nil {
