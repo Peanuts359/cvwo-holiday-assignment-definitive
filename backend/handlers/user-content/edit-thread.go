@@ -20,8 +20,8 @@ func EditThreadHandler(c *gin.Context, db *sql.DB) {
 		return
 	}
 
-	id := c.Param("id")
-	if id == "" {
+	threadID := c.Param("id")
+	if threadID == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Thread ID is required"})
 		return
 	}
@@ -40,7 +40,7 @@ func EditThreadHandler(c *gin.Context, db *sql.DB) {
 
 	// failsafe: make sure that only the poster can edit a thread under their username
 	var threadOwner string
-	err = db.QueryRow("SELECT username FROM threads WHERE id = ?", id).Scan(&threadOwner)
+	err = db.QueryRow("SELECT username FROM threads WHERE id = ?", threadID).Scan(&threadOwner)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			c.JSON(http.StatusNotFound, gin.H{"error": "Thread not found"})
@@ -57,7 +57,7 @@ func EditThreadHandler(c *gin.Context, db *sql.DB) {
 
 	// continued edit logic
 	query := "UPDATE threads SET content = ? WHERE id = ?"
-	res, err := db.Exec(query, newContent, id)
+	res, err := db.Exec(query, newContent, threadID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to edit thread"})
 		return
