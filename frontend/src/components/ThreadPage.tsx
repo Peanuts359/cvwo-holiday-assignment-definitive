@@ -145,9 +145,11 @@ const ThreadPage: React.FC = () => {
             <Navbar />
             <main className="p-8">
                 <h1 className="text-2xl font-bold">{thread.title}</h1>
+                <p className="text-sm text-gray-500 mb-2">
+                    Posted by: <span className="font-bold">{thread.username}</span>
+                </p>
                 <p className="text-gray-500">Tags: {thread.tags || "No tags"}</p>
                 <p className="mt-4">{thread.content}</p>
-
                 <div className="mt-8">
                     <div>
                         <h2 className="text-lg font-bold">Comments: {comments.length}</h2>
