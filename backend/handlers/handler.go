@@ -16,6 +16,12 @@ func RegisterRoutes(r *gin.Engine, db *sql.DB) {
 
 	r.POST("/create-thread", func(c *gin.Context) { user_content.CreateThreadHandler(c, db) })
 	r.GET("/threads", func(c *gin.Context) { user_content.GetThreadsHandler(c, db) })
-	r.DELETE("/threads/:id", func(c *gin.Context) { user_content.DeleteThreadHandler(c, db) })
-	r.PUT("/threads/:id", func(c *gin.Context) { user_content.EditThreadHandler(c, db) })
+	r.DELETE("/threads/:thread_id", func(c *gin.Context) { user_content.DeleteThreadHandler(c, db) })
+	r.PUT("/threads/:thread_id", func(c *gin.Context) { user_content.EditThreadHandler(c, db) })
+
+	r.POST("/threads/:thread_id/comments", func(c *gin.Context) { user_content.CreateCommentHandler(c, db) })
+	r.GET("/threads/:thread_id/comments", func(c *gin.Context) { user_content.GetCommentsHandler(c, db) })
+	r.PUT("/threads/:thread_id/comments/:comment_id", func(c *gin.Context) { user_content.EditCommentHandler(c, db) })
+	r.DELETE("/threads/:thread_id/comments/:comment_id", func(c *gin.Context) { user_content.DeleteCommentHandler(c, db) })
+	r.GET("/threads/:thread_id", func(c *gin.Context) { user_content.GetThreadDetailsHandler(c, db) })
 }

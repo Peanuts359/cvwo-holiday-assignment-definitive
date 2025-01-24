@@ -44,6 +44,19 @@ func initDB() {
 		log.Fatal("Failed to execute thread schema:", err)
 	}
 
+	commentSchema := `
+	CREATE TABLE IF NOT EXISTS comments (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		thread_id INTEGER NOT NULL,
+		username TEXT NOT NULL,
+		content TEXT NOT NULL,
+		FOREIGN KEY (thread_id) REFERENCES threads (id) ON DELETE CASCADE
+	);`
+	_, err = db.Exec(commentSchema)
+	if err != nil {
+		log.Fatal("Failed to execute comment schema:", err)
+	}
+
 }
 
 func main() {

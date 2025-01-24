@@ -20,7 +20,7 @@ func DeleteThreadHandler(c *gin.Context, db *sql.DB) {
 		return
 	}
 
-	id := c.Param("id")
+	id := c.Param("thread_id")
 	if id == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Thread ID is required"})
 		return

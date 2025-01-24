@@ -1,4 +1,5 @@
 import React, {useState} from "react";
+import {useNavigate} from "react-router-dom";
 
 interface ThreadProps {
     id: number;
@@ -6,14 +7,29 @@ interface ThreadProps {
     title: string;
     tags: string | null;
     content: string;
+    commentCount: number;
     loggedInUser: string;
     onDelete: (id: number) => void;
     onEdit: (id: number, newContent: string) => void;
 }
 
-const ThreadContainer: React.FC<ThreadProps> = ({ id, username, title, tags, content, loggedInUser, onDelete, onEdit }) => {
+const ThreadContainer: React.FC<ThreadProps> = ({ id, username, title, tags, content, commentCount, loggedInUser, onDelete, onEdit }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [newContent, setNewContent] = useState(content);
+    const navigate = useNavigate();
+    console.log("ThreadContainer received ID:", id);
+
+    const truncatedContent =
+        content.length > 200 ? content.slice(0, 200) + "..." : content;
+
+    const handleReadMore = () => {
+        console.log("Navigating to thread with ID:", id);
+        if (id) {
+            navigate(`/threads/${id}`); // Navigate to thread details page
+        } else {
+            console.error("Thread ID is undefined");
+        }
+    };
 
     const handleSave = () => {
         if (newContent.trim() === "") {
@@ -85,7 +101,13 @@ const ThreadContainer: React.FC<ThreadProps> = ({ id, username, title, tags, con
                         </span>
                         )) : ""}
                     </p>
-                    <p className="text-base mb-4">{content}</p>
+                    <p className="text-base mb-2">{truncatedContent}</p>
+                    <p
+                        className="text-blue-500 hover:underline cursor-pointer"
+                        onClick={handleReadMore}
+                    >
+                        Read More
+                    </p>
                 </>
             )}
 
