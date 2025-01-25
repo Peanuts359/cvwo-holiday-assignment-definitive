@@ -54,6 +54,25 @@ const ThreadContainer: React.FC<ThreadProps> = ({ thread_id, username, title, ta
             onDelete(thread_id);
         }
     }
+
+    const handleUpvoteClick = () => {
+        if (userVote === "upvote") {
+            setUserVote(null);
+        } else {
+            setUserVote("upvote");
+        }
+        onUpvote(thread_id);
+    };
+
+    const handleDownvoteClick = () => {
+        if (userVote === "downvote") {
+            setUserVote(null);
+        } else {
+            setUserVote("downvote");
+        }
+        onDownvote(thread_id);
+    };
+
     return (
         <div className="border border-gray-300 p-4 rounded-lg shadow-md relative">
             {isEditing ? (
@@ -115,18 +134,18 @@ const ThreadContainer: React.FC<ThreadProps> = ({ thread_id, username, title, ta
             )}
             <div className="absolute bottom-2 right-2 flex items-center space-x-4">
                 <button
-                    onClick={() => onDownvote(thread_id)}
+                    onClick={handleDownvoteClick}
                     className={`hover:bg-gray-200 rounded-full p-2 ${
-                        userVote === "downvote" ? "bg-red-500" : "bg-gray-300"
+                        userVote === "downvote" ? "bg-blue-500" : "bg-gray-300"
                     }`}
                 >
                     <img src="/down.svg" alt="Downvote" className="h-6 w-6"/>
                 </button>
                 <span className="text-lg font-bold">{votes}</span>
                 <button
-                    onClick={() => onUpvote(thread_id)}
+                    onClick={handleUpvoteClick}
                     className={`hover:bg-gray-200 rounded-full p-2 ${
-                        userVote === "upvote" ? "bg-blue-500" : "bg-gray-300"
+                        userVote === "upvote" ? "bg-red-500" : "bg-gray-300"
                     }`}
                 >
                     <img src="/up.svg" alt="Upvote" className="h-6 w-6"/>
