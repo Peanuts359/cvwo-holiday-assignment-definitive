@@ -4,6 +4,7 @@ import (
 	"assignment-definitive/backend/utils"
 	"database/sql"
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
 	"strings"
 )
@@ -33,7 +34,7 @@ func EditCommentHandler(c *gin.Context, db *sql.DB) {
 	}
 
 	query := "UPDATE comments SET content = ? WHERE id = ? AND username = ?"
-	res, err := db.Exec(query, commentID, username, req.Content)
+	res, err := db.Exec(query, req.Content, commentID, username)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to edit comment"})
 		return
@@ -41,6 +42,7 @@ func EditCommentHandler(c *gin.Context, db *sql.DB) {
 
 	rowsAffected, _ := res.RowsAffected()
 	if rowsAffected == 0 {
+		log.Println("Failed to edit comment")
 		c.JSON(http.StatusForbidden, gin.H{"error": "You are not authorised to edit this comment"})
 		return
 	}

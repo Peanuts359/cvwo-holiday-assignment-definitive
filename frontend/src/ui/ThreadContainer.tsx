@@ -55,7 +55,6 @@ const ThreadContainer: React.FC<ThreadProps> = ({ id, username, title, tags, con
     };
 
     const handleDelete = () => {
-        console.log("Thread ID to delete:", id);
         if (window.confirm("Deleted posts cannot be restored. Do you really want to delete this?")) {
             onDelete(id);
         }

@@ -5,7 +5,7 @@ import Navbar from "../ui/Navbar";
 import CommentContainer from "../ui/CommentContainer";
 
 interface Comment {
-    id: number;
+    comment_id: number;
     username: string;
     content: string;
 }
@@ -26,6 +26,7 @@ const ThreadPage: React.FC = () => {
                 setThread(threadResponse.data);
 
                 const commentsResponse = await axios.get(`http://localhost:8080/threads/${thread_id}/comments`);
+                console.log("API response for comments:", commentsResponse.data);
                 setComments(commentsResponse.data || []);
             } catch (error) {
                 console.error("Error fetching thread details:", error);
@@ -144,7 +145,7 @@ const ThreadPage: React.FC = () => {
         }
     };
 
-    const handleEditComment = async (commentId: number, newContent: string) => {
+    const handleEditComment = async (comment_id: number, newContent: string) => {
         const token = sessionStorage.getItem("token");
         if (!token) {
             alert("You must be logged in to edit comments.");
@@ -153,7 +154,7 @@ const ThreadPage: React.FC = () => {
 
         try {
             const response = await axios.put(
-                `http://localhost:8080/comments/${commentId}`,
+                `http://localhost:8080/threads/${thread_id}/comments/${comment_id}`,
                 { content: newContent },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
@@ -161,7 +162,7 @@ const ThreadPage: React.FC = () => {
             if (response.status === 200) {
                 setComments(
                     comments.map((comment) =>
-                        comment.id === commentId
+                        comment.comment_id === comment_id
                             ? { ...comment, content: newContent }
                             : comment
                     )
@@ -175,7 +176,7 @@ const ThreadPage: React.FC = () => {
         }
     };
 
-    const handleDeleteComment = async (commentId: number) => {
+    const handleDeleteComment = async (comment_id: number) => {
         const token = sessionStorage.getItem("token");
         if (!token) {
             alert("You must be logged in to delete comments.");
@@ -187,13 +188,14 @@ const ThreadPage: React.FC = () => {
         }
 
         try {
+            console.log("Comment ID to delete:", comment_id);
             const response = await axios.delete(
-                `http://localhost:8080/comments/${commentId}`,
+                `http://localhost:8080/threads/${thread_id}/comments/${comment_id}`,
                 { headers: { Authorization: `Bearer ${token}` } }
             );
 
             if (response.status === 200) {
-                setComments(comments.filter((comment) => comment.id !== commentId));
+                setComments(comments.filter((comment) => comment.comment_id !== comment_id));
                 alert("Comment deleted successfully.");
                 window.location.reload();
             }
@@ -206,6 +208,7 @@ const ThreadPage: React.FC = () => {
 
     if (!thread) return <div>Loading...</div>;
 
+    console.log(comments);
     return (
         <div className="min-h-screen flex flex-col bg-gray-50">
             <Navbar />
@@ -244,8 +247,8 @@ const ThreadPage: React.FC = () => {
                             <div className="space-y-4">
                                 {comments.map((comment) => (
                                     <CommentContainer
-                                        key={comment.id}
-                                        id={comment.id}
+                                        key={comment.comment_id}
+                                        comment_id={comment.comment_id}
                                         username={comment.username}
                                         content={comment.content}
                                         loggedInUser={loggedInUser}
