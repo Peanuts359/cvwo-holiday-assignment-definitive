@@ -10,6 +10,10 @@ interface Thread {
     tags: string | null;
     content: string;
     commentCount: number;
+    votes: number;
+    upvotes: number;
+    downvotes: number;
+    userVote: "upvoted" | "downvoted" | null;
 }
 
 const Menu: React.FC = () => {
@@ -51,9 +55,85 @@ const Menu: React.FC = () => {
         fetchThreads();
     }, []);
 
+    const handleUpvote = async (id: number) => {
+        try {
+            const token = sessionStorage.getItem("token");
+            if (!token) {
+                alert("You must be logged in to vote.");
+                return;
+            }
+            const response = await axios.post(
+                `http://localhost:8080/threads/${id}/upvote`,
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
+            if (response.status === 200) {
+                setThreads((prevThreads) =>
+                    prevThreads.map((thread) =>
+                        thread.thread_id === id
+                            ? {
+                                ...thread,
+                                votes: thread.votes + 1,
+                                upvotes: thread.upvotes + 1,
+                            }
+                            : thread
+                    )
+                );
+            }
+        } catch (error) {
+            console.error("Error upvoting thread:", error);
+        }
+    };
+
+    const handleDownvote = async (id: number) => {
+        try {
+            const token = sessionStorage.getItem("token");
+            if (!token) {
+                alert("You must be logged in to vote.");
+                return;
+            }
+
+            const response = await axios.post(
+                `http://localhost:8080/threads/${id}/downvote`,
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
+            if (response.status === 200) {
+                setThreads((prevThreads) =>
+                    prevThreads.map((thread) =>
+                        thread.thread_id === id
+                            ? {
+                                ...thread,
+                                votes: thread.votes - 1,
+                                downvotes: thread.downvotes + 1,
+                            }
+                            : thread
+                    )
+                );
+            }
+        } catch (error) {
+            console.error("Error downvoting thread:", error);
+        }
+    };
+
+
+
     const handleDelete = async (id: number) => {
         try {
-            const response = await axios.delete(`http://localhost:8080/threads/${id}`);
+            const response = await axios.delete(
+                `http://localhost:8080/threads/${id}`,
+                { headers: { Authorization: `Bearer ${sessionStorage.getItem("token")}` } }
+            );
             if (response.status === 200) {
                 setThreads(threads.filter((thread) => thread.thread_id !== id));
                 alert("Thread deleted successfully.");
@@ -99,13 +179,17 @@ const Menu: React.FC = () => {
                             return (
                                 <ThreadContainer
                                     key={thread.thread_id}
+                                    {...thread}
                                     id={thread.thread_id}
                                     username={thread.username}
                                     title={thread.title}
                                     tags={thread.tags}
                                     content={thread.content}
                                     commentCount={thread.commentCount}
+                                    votes={thread.votes}
                                     loggedInUser={loggedInUser}
+                                    onUpvote={handleUpvote}
+                                    onDownvote={handleDownvote}
                                     onDelete={handleDelete}
                                     onEdit={handleEdit}
                                 />

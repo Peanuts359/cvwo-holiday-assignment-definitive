@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"assignment-definitive/backend/handlers/user-content"
+	"assignment-definitive/backend/handlers/user-content/votes"
 	"database/sql"
 	"github.com/gin-gonic/gin"
 )
@@ -24,4 +25,7 @@ func RegisterRoutes(r *gin.Engine, db *sql.DB) {
 	r.PUT("/threads/:thread_id/comments/:comment_id", func(c *gin.Context) { user_content.EditCommentHandler(c, db) })
 	r.DELETE("/threads/:thread_id/comments/:comment_id", func(c *gin.Context) { user_content.DeleteCommentHandler(c, db) })
 	r.GET("/threads/:thread_id", func(c *gin.Context) { user_content.GetThreadDetailsHandler(c, db) })
+
+	r.POST("/threads/:thread_id/upvote", func(c *gin.Context) { votes.UpvoteThreadHandler(c, db) })
+	r.POST("/threads/:thread_id/downvote", func(c *gin.Context) { votes.DownvoteThreadHandler(c, db) })
 }

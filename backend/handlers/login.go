@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"database/sql"
+	"log"
 	"net/http"
 
 	"assignment-definitive/backend/utils"
@@ -41,5 +42,6 @@ func LoginHandler(c *gin.Context, db *sql.DB) {
 		return
 	}
 
+	log.Println(token)
 	c.JSON(http.StatusOK, gin.H{"token": token})
 }

@@ -25,6 +25,7 @@ func initDB() {
 		username TEXT NOT NULL UNIQUE,
 		email TEXT NOT NULL UNIQUE,
 		password TEXT NOT NULL
+	                                 
 	);`
 	_, err = db.Exec(userSchema)
 	if err != nil {
@@ -35,9 +36,11 @@ func initDB() {
 	CREATE TABLE IF NOT EXISTS threads (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 	    username TEXT NOT NULL,
-		title TEXT NOT NULL,
+		title TEXT NOT NULL UNIQUE,
         content TEXT NOT NULL,
-	    tags TEXT NULL
+	    tags TEXT NULL,
+	    upvotes INTEGER DEFAULT 0,
+        downvotes INTEGER DEFAULT 0
 	);`
 	_, err = db.Exec(threadSchema)
 	if err != nil {
@@ -55,6 +58,20 @@ func initDB() {
 	_, err = db.Exec(commentSchema)
 	if err != nil {
 		log.Fatal("Failed to execute comment schema:", err)
+	}
+
+	voteSchema := `
+	CREATE TABLE IF NOT EXISTS user_votes (
+    	id INTEGER PRIMARY KEY AUTOINCREMENT,
+    	user_id INTEGER NOT NULL,
+    	thread_id INTEGER NOT NULL,
+    	vote_type TEXT CHECK(vote_type IN ('upvote', 'downvote')),
+    	UNIQUE(user_id, thread_id),
+    	FOREIGN KEY (thread_id) REFERENCES threads (id)
+	);`
+	_, err = db.Exec(voteSchema)
+	if err != nil {
+		log.Fatal("Failed to execute vote schema:", err)
 	}
 
 }

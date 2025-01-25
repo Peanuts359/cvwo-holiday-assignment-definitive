@@ -10,13 +10,21 @@ interface ThreadProps {
     commentCount: number;
     loggedInUser: string;
     onDelete: (id: number) => void;
-    onEdit: (id: number, newContent: string) => void;
+    onEdit: (id: number, newContent: string) => void
+    votes: number;
+    userVote: "upvoted" | "downvoted" | null;
+    onUpvote: (id: number) => void;
+    onDownvote: (id: number) => void;
+
 }
 
-const ThreadContainer: React.FC<ThreadProps> = ({ id, username, title, tags, content, commentCount, loggedInUser, onDelete, onEdit }) => {
+const ThreadContainer: React.FC<ThreadProps> = ({ id, username, title, tags, content, commentCount, votes, loggedInUser, onUpvote, onDownvote, onDelete, onEdit }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [newContent, setNewContent] = useState(content);
     const navigate = useNavigate();
+    const [userVote, setUserVote] = useState<"upvoted" | "downvoted" | null>(null);
+
+
     console.log("ThreadContainer received ID:", id);
 
     const truncatedContent =
@@ -54,16 +62,17 @@ const ThreadContainer: React.FC<ThreadProps> = ({ id, username, title, tags, con
     }
     return (
         <div className="border border-gray-300 p-4 rounded-lg shadow-md relative">
-            { isEditing ? (
+            {isEditing ? (
                 <div>
                     <h2 className="font-bold text-lg mb-2">{title}</h2>
                     <p className="text-sm text-gray-500 mb-4">Posted by: {username}</p>
                     <p className="text-sm text-gray-500">
                         Tags: {tags ? tags.split(",").map(tag => (
-                        <span key={tag} className="inline-block bg-gray-200 rounded-full px-2 py-1 text-xs text-gray-700 mr-2">
+                        <span key={tag}
+                              className="inline-block bg-gray-200 rounded-full px-2 py-1 text-xs text-gray-700 mr-2">
                         {tag.trim()}
                         </span>
-                        )) : ""}
+                    )) : ""}
                     </p>
 
                     <h3>Editing thread content</h3>
@@ -99,7 +108,7 @@ const ThreadContainer: React.FC<ThreadProps> = ({ id, username, title, tags, con
                               className="inline-block bg-gray-200 rounded-full px-2 py-1 text-xs text-gray-700 mr-2">
                             {tag.trim()}
                         </span>
-                        )) : ""}
+                    )) : ""}
                     </p>
                     <p className="text-base mb-2">{truncatedContent}</p>
                     <p
@@ -110,7 +119,25 @@ const ThreadContainer: React.FC<ThreadProps> = ({ id, username, title, tags, con
                     </p>
                 </>
             )}
-
+            <div className="absolute bottom-2 right-2 flex items-center space-x-4">
+                <button
+                    onClick={() => onDownvote(id)}
+                    className={`hover:bg-gray-200 rounded-full p-2 ${
+                        userVote === "downvoted" ? "bg-red-500 text-white" : "bg-gray-300"
+                    }`}
+                >
+                    <img src="/down.svg" alt="Downvote" className="h-6 w-6"/>
+                </button>
+                <span className="text-lg font-bold">{votes}</span>
+                <button
+                    onClick={() => onUpvote(id)}
+                    className={`hover:bg-gray-200 rounded-full p-2 ${
+                        userVote === "upvoted" ? "bg-blue-500 text-white" : "bg-gray-300"
+                    }`}
+                >
+                    <img src="/up.svg" alt="Upvote" className="h-6 w-6"/>
+                </button>
+            </div>
 
             {loggedInUser === username && (
                 <div className="absolute top-2 right-2 flex space-x-2">

@@ -17,6 +17,7 @@ const ThreadPage: React.FC = () => {
     const [comments, setComments] = useState<Comment[]>([]);
     const [newComment, setNewComment] = useState<string>("");
     const [loggedInUser, setLoggedInUser] = useState<string>("");
+    const [currentVote, setCurrentVote] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchThread = async () => {
@@ -50,6 +51,68 @@ const ThreadPage: React.FC = () => {
         fetchLoggedInUser();
     }, [thread_id]);
 
+    const handleUpvote = async () => {
+        try {
+            const token = sessionStorage.getItem("token");
+            if (!token) {
+                alert("You must be logged in to vote.");
+                return;
+            }
+
+            const response = await axios.post(
+                `http://localhost:8080/threads/${thread_id}/upvote`,
+                {},
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+
+            if (response.status === 200) {
+                setThread((prevThread: any) => ({
+                    ...prevThread,
+                    upvotes: prevThread.upvotes + (currentVote === "upvote" ? -1 : 1),
+                    downvotes: currentVote === "downvote" ? prevThread.downvotes - 1 : prevThread.downvotes,
+                    votes:
+                        prevThread.upvotes -
+                        prevThread.downvotes +
+                        (currentVote === "upvote" ? -1 : currentVote === "downvote" ? 2 : 1),
+                }));
+                setCurrentVote(currentVote === "upvote" ? null : "upvote");
+            }
+        } catch (error) {
+            console.error("Error upvoting thread:", error);
+        }
+    };
+
+    const handleDownvote = async () => {
+        try {
+            const token = sessionStorage.getItem("token");
+            if (!token) {
+                alert("You must be logged in to vote.");
+                return;
+            }
+
+            const response = await axios.post(
+                `http://localhost:8080/threads/${thread_id}/downvote`,
+                {},
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+
+            if (response.status === 200) {
+                setThread((prevThread: any) => ({
+                    ...prevThread,
+                    upvotes: currentVote === "upvote" ? prevThread.upvotes - 1 : prevThread.upvotes,
+                    downvotes: prevThread.downvotes + (currentVote === "downvote" ? -1 : 1),
+                    votes:
+                        prevThread.upvotes -
+                        prevThread.downvotes +
+                        (currentVote === "downvote" ? 1 : currentVote === "upvote" ? -2 : -1),
+                }));
+                setCurrentVote(currentVote === "downvote" ? null : "downvote");
+            }
+        } catch (error) {
+            console.error("Error downvoting thread:", error);
+        }
+    };
+
     const handleAddComment = async () => {
         const token = sessionStorage.getItem("token");
         if (!token) {
@@ -73,6 +136,7 @@ const ThreadPage: React.FC = () => {
                 setComments([...comments, response.data]);
                 setNewComment("");
                 alert("Comment added successfully!");
+                window.location.reload();
             }
         } catch (error) {
             console.error("Error adding comment:", error);
@@ -103,6 +167,7 @@ const ThreadPage: React.FC = () => {
                     )
                 );
                 alert("Comment edited successfully!");
+                window.location.reload();
             }
         } catch (error) {
             console.error("Error editing comment:", error);
@@ -130,6 +195,7 @@ const ThreadPage: React.FC = () => {
             if (response.status === 200) {
                 setComments(comments.filter((comment) => comment.id !== commentId));
                 alert("Comment deleted successfully.");
+                window.location.reload();
             }
         } catch (error) {
             console.error("Error deleting comment:", error);
@@ -150,6 +216,27 @@ const ThreadPage: React.FC = () => {
                 </p>
                 <p className="text-gray-500">Tags: {thread.tags || "No tags"}</p>
                 <p className="mt-4">{thread.content}</p>
+
+                <div className="flex items-center space-x-4">
+                    <button
+                        onClick={handleDownvote}
+                        className={`hover:bg-gray-200 rounded-full p-2 ${
+                            thread.userVote === "downvoted" ? "bg-blue-500 text-white" : "bg-gray-300"
+                        }`}
+                    >
+                        <img src="/down.svg" alt="Downvote" className="h-6 w-6"/>
+                    </button>
+                    <span className="text-lg font-bold">{thread.votes}</span>
+                    <button
+                        onClick={handleUpvote}
+                        className={`hover:bg-gray-200 rounded-full p-2 ${
+                            thread.userVote === "upvoted" ? "bg-red-500 text-white" : "bg-gray-300"
+                        }`}
+                    >
+                        <img src="/up.svg" alt="Upvote" className="h-6 w-6"/>
+                    </button>
+                </div>
+
                 <div className="mt-8">
                     <div>
                         <h2 className="text-lg font-bold">Comments: {comments.length}</h2>
