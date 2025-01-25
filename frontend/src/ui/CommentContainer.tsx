@@ -1,16 +1,16 @@
 import React, { useState } from "react";
 
 interface CommentProps {
-    id: number;
+    comment_id: number;
     username: string;
     content: string;
     loggedInUser: string;
-    onEdit: (id: number, updatedContent: string) => void;
-    onDelete: (id: number) => void;
+    onEdit: (comment_id: number, updatedContent: string) => void;
+    onDelete: (comment_id: number) => void;
 }
 
 const CommentContainer: React.FC<CommentProps> = ({
-                                                      id,
+                                                      comment_id,
                                                       username,
                                                       content,
                                                       loggedInUser,
@@ -32,10 +32,11 @@ const CommentContainer: React.FC<CommentProps> = ({
             return;
         }
 
-        onEdit(id, editedContent);
+        onEdit(comment_id, editedContent);
         setIsEditing(false);
     };
 
+    console.log("Props in CommentContainer:", { comment_id, username, content });
     return (
         <div className="mt-2 p-2 border-b relative">
             {isEditing ? (
@@ -76,7 +77,10 @@ const CommentContainer: React.FC<CommentProps> = ({
                                 src="/delete.svg"
                                 alt="Delete"
                                 className="h-4 w-4 cursor-pointer"
-                                onClick={() => onDelete(id)}
+                                onClick={() => {
+                                    console.log("Delete clicked for ID:", comment_id);
+                                    onDelete(comment_id);}
+                                }
                             />
                         </div>
                     )}

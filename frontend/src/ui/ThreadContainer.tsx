@@ -2,30 +2,34 @@ import React, {useState} from "react";
 import {useNavigate} from "react-router-dom";
 
 interface ThreadProps {
-    id: number;
+    thread_id: number;
     username: string;
     title: string;
     tags: string | null;
     content: string;
     commentCount: number;
     loggedInUser: string;
-    onDelete: (id: number) => void;
-    onEdit: (id: number, newContent: string) => void;
+    votes: number;
+    initialVote: "upvote" | "downvote" | null;
+    onDelete: (thread_id: number) => void;
+    onEdit: (thread_id: number, newContent: string) => void
+    onUpvote: (thread_id: number) => void;
+    onDownvote: (thread_id: number) => void;
+
 }
 
-const ThreadContainer: React.FC<ThreadProps> = ({ id, username, title, tags, content, commentCount, loggedInUser, onDelete, onEdit }) => {
+const ThreadContainer: React.FC<ThreadProps> = ({ thread_id, username, title, tags, content, commentCount, loggedInUser, votes, initialVote, onDelete, onEdit, onUpvote, onDownvote}) => {
     const [isEditing, setIsEditing] = useState(false);
     const [newContent, setNewContent] = useState(content);
     const navigate = useNavigate();
-    console.log("ThreadContainer received ID:", id);
+    const [currVote, setUserVote] = useState<"upvote" | "downvote" | null>(initialVote);
 
     const truncatedContent =
         content.length > 200 ? content.slice(0, 200) + "..." : content;
 
     const handleReadMore = () => {
-        console.log("Navigating to thread with ID:", id);
-        if (id) {
-            navigate(`/threads/${id}`); // Navigate to thread details page
+        if (thread_id) {
+            navigate(`/threads/${thread_id}`); // Navigate to thread details page
         } else {
             console.error("Thread ID is undefined");
         }
@@ -42,28 +46,47 @@ const ThreadContainer: React.FC<ThreadProps> = ({ id, username, title, tags, con
             setIsEditing(false);
             return;
         }
-        onEdit(id, newContent);
+        onEdit(thread_id, newContent);
         setIsEditing(false);
     };
 
     const handleDelete = () => {
-        console.log("Thread ID to delete:", id);
         if (window.confirm("Deleted posts cannot be restored. Do you really want to delete this?")) {
-            onDelete(id);
+            onDelete(thread_id);
         }
     }
+
+    const handleUpvoteClick = () => {
+        if (currVote === "upvote") {
+            setUserVote(null);
+        } else {
+            setUserVote("upvote");
+        }
+        onUpvote(thread_id);
+    };
+
+    const handleDownvoteClick = () => {
+        if (currVote === "downvote") {
+            setUserVote(null);
+        } else {
+            setUserVote("downvote");
+        }
+        onDownvote(thread_id);
+    };
+
     return (
         <div className="border border-gray-300 p-4 rounded-lg shadow-md relative">
-            { isEditing ? (
+            {isEditing ? (
                 <div>
                     <h2 className="font-bold text-lg mb-2">{title}</h2>
                     <p className="text-sm text-gray-500 mb-4">Posted by: {username}</p>
                     <p className="text-sm text-gray-500">
                         Tags: {tags ? tags.split(",").map(tag => (
-                        <span key={tag} className="inline-block bg-gray-200 rounded-full px-2 py-1 text-xs text-gray-700 mr-2">
+                        <span key={tag}
+                              className="inline-block bg-gray-200 rounded-full px-2 py-1 text-xs text-gray-700 mr-2">
                         {tag.trim()}
                         </span>
-                        )) : ""}
+                    )) : ""}
                     </p>
 
                     <h3>Editing thread content</h3>
@@ -99,7 +122,7 @@ const ThreadContainer: React.FC<ThreadProps> = ({ id, username, title, tags, con
                               className="inline-block bg-gray-200 rounded-full px-2 py-1 text-xs text-gray-700 mr-2">
                             {tag.trim()}
                         </span>
-                        )) : ""}
+                    )) : ""}
                     </p>
                     <p className="text-base mb-2">{truncatedContent}</p>
                     <p
@@ -110,7 +133,25 @@ const ThreadContainer: React.FC<ThreadProps> = ({ id, username, title, tags, con
                     </p>
                 </>
             )}
-
+            <div className="absolute bottom-2 right-2 flex items-center space-x-4">
+                <button
+                    onClick={handleDownvoteClick}
+                    className={`hover:bg-gray-200 rounded-full p-2 ${
+                        currVote === "downvote" ? "bg-blue-500" : "bg-gray-300"
+                    }`}
+                >
+                    <img src="/down.svg" alt="Downvote" className="h-6 w-6"/>
+                </button>
+                <span className="text-lg font-bold">{votes}</span>
+                <button
+                    onClick={handleUpvoteClick}
+                    className={`hover:bg-gray-200 rounded-full p-2 ${
+                        currVote === "upvote" ? "bg-red-500" : "bg-gray-300"
+                    }`}
+                >
+                    <img src="/up.svg" alt="Upvote" className="h-6 w-6"/>
+                </button>
+            </div>
 
             {loggedInUser === username && (
                 <div className="absolute top-2 right-2 flex space-x-2">

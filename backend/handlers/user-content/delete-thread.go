@@ -4,6 +4,7 @@ import (
 	"assignment-definitive/backend/utils"
 	"database/sql"
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
 	"strings"
 )
@@ -11,11 +12,13 @@ import (
 func DeleteThreadHandler(c *gin.Context, db *sql.DB) {
 	tokenString := c.GetHeader("Authorization")
 	if tokenString == "" {
+		log.Println("tokenString is empty")
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Missing Authorization header"})
 		return
 	}
 	username, err := utils.UsernameFromToken(strings.TrimPrefix(tokenString, "Bearer "))
 	if err != nil {
+		log.Println("invalid token")
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
 		return
 	}
