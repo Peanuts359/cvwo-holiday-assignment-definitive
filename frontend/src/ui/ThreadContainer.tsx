@@ -10,6 +10,7 @@ interface ThreadProps {
     commentCount: number;
     loggedInUser: string;
     votes: number;
+    initialVote: "upvote" | "downvote" | null;
     onDelete: (thread_id: number) => void;
     onEdit: (thread_id: number, newContent: string) => void
     onUpvote: (thread_id: number) => void;
@@ -17,11 +18,11 @@ interface ThreadProps {
 
 }
 
-const ThreadContainer: React.FC<ThreadProps> = ({ thread_id, username, title, tags, content, commentCount, loggedInUser, votes, onDelete, onEdit, onUpvote, onDownvote}) => {
+const ThreadContainer: React.FC<ThreadProps> = ({ thread_id, username, title, tags, content, commentCount, loggedInUser, votes, initialVote, onDelete, onEdit, onUpvote, onDownvote}) => {
     const [isEditing, setIsEditing] = useState(false);
     const [newContent, setNewContent] = useState(content);
     const navigate = useNavigate();
-    const [userVote, setUserVote] = useState<"upvote" | "downvote" | null>(null);
+    const [currVote, setUserVote] = useState<"upvote" | "downvote" | null>(initialVote);
 
     const truncatedContent =
         content.length > 200 ? content.slice(0, 200) + "..." : content;
@@ -56,7 +57,7 @@ const ThreadContainer: React.FC<ThreadProps> = ({ thread_id, username, title, ta
     }
 
     const handleUpvoteClick = () => {
-        if (userVote === "upvote") {
+        if (currVote === "upvote") {
             setUserVote(null);
         } else {
             setUserVote("upvote");
@@ -65,7 +66,7 @@ const ThreadContainer: React.FC<ThreadProps> = ({ thread_id, username, title, ta
     };
 
     const handleDownvoteClick = () => {
-        if (userVote === "downvote") {
+        if (currVote === "downvote") {
             setUserVote(null);
         } else {
             setUserVote("downvote");
@@ -136,7 +137,7 @@ const ThreadContainer: React.FC<ThreadProps> = ({ thread_id, username, title, ta
                 <button
                     onClick={handleDownvoteClick}
                     className={`hover:bg-gray-200 rounded-full p-2 ${
-                        userVote === "downvote" ? "bg-blue-500" : "bg-gray-300"
+                        currVote === "downvote" ? "bg-blue-500" : "bg-gray-300"
                     }`}
                 >
                     <img src="/down.svg" alt="Downvote" className="h-6 w-6"/>
@@ -145,7 +146,7 @@ const ThreadContainer: React.FC<ThreadProps> = ({ thread_id, username, title, ta
                 <button
                     onClick={handleUpvoteClick}
                     className={`hover:bg-gray-200 rounded-full p-2 ${
-                        userVote === "upvote" ? "bg-red-500" : "bg-gray-300"
+                        currVote === "upvote" ? "bg-red-500" : "bg-gray-300"
                     }`}
                 >
                     <img src="/up.svg" alt="Upvote" className="h-6 w-6"/>

@@ -42,7 +42,16 @@ const Menu: React.FC = () => {
 
         const fetchThreads = async () => {
             try {
-                const response = await axios.get("http://localhost:8080/threads");
+                const token = sessionStorage.getItem("token");
+                if (!token) {
+                    alert("You must be logged in to vote.");
+                    return;
+                }
+                const response = await axios.get("http://localhost:8080/threads", {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
                 console.log("Fetched threads:", response.data);
                 setThreads(response.data || []);
             } catch (error) {
@@ -208,6 +217,7 @@ const Menu: React.FC = () => {
                                     commentCount={thread.commentCount}
                                     loggedInUser={loggedInUser}
                                     votes={thread.votes}
+                                    initialVote={thread.userVote}
                                     onDelete={handleDelete}
                                     onEdit={handleEdit}
                                     onUpvote={handleUpvote}

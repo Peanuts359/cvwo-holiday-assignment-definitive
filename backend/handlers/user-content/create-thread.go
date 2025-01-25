@@ -17,6 +17,7 @@ type Thread struct {
 	Upvotes   int     `json:"upvotes"`
 	Downvotes int     `json:"downvotes"`
 	Votes     int     `json:"votes"`
+	UserVote  string  `json:"userVote"`
 }
 
 func CreateThreadHandler(c *gin.Context, db *sql.DB) {
