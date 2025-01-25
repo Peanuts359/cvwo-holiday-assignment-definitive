@@ -1,12 +1,8 @@
 package utils
 
 import (
-	"database/sql"
 	"errors"
-	"fmt"
-	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
-	"strings"
 	"time"
 )
 
@@ -53,30 +49,4 @@ func UsernameFromToken(tokenString string) (string, error) {
 	}
 
 	return username, nil
-}
-
-func GetUserIDFromToken(c *gin.Context, db *sql.DB) (int, error) {
-	authHeader := c.GetHeader("Authorization")
-	if authHeader == "" {
-		return 0, errors.New("missing Authorization header")
-	}
-
-	tokenString := strings.TrimPrefix(authHeader, "Bearer ")
-
-	username, err := UsernameFromToken(tokenString)
-	if err != nil {
-		return 0, fmt.Errorf("failed to extract username from token: %w", err)
-	}
-	
-	var userID int
-	query := "SELECT id FROM users WHERE username = ?"
-	err = db.QueryRow(query, username).Scan(&userID)
-	if err != nil {
-		if err == sql.ErrNoRows {
-			return 0, errors.New("user not found")
-		}
-		return 0, fmt.Errorf("database error: %w", err)
-	}
-
-	return userID, nil
 }

@@ -13,7 +13,7 @@ interface Thread {
     votes: number;
     upvotes: number;
     downvotes: number;
-    userVote: "upvoted" | "downvoted" | null;
+    userVote: "upvote" | "downvote" | null;
 }
 
 const Menu: React.FC = () => {
@@ -55,7 +55,7 @@ const Menu: React.FC = () => {
         fetchThreads();
     }, []);
 
-    const handleUpvote = async (id: number) => {
+    const handleUpvote = async (thread_id: number) => {
         try {
             const token = sessionStorage.getItem("token");
             if (!token) {
@@ -63,7 +63,7 @@ const Menu: React.FC = () => {
                 return;
             }
             const response = await axios.post(
-                `http://localhost:8080/threads/${id}/upvote`,
+                `http://localhost:8080/threads/${thread_id}/upvote`,
                 {},
                 {
                     headers: {
@@ -75,11 +75,21 @@ const Menu: React.FC = () => {
             if (response.status === 200) {
                 setThreads((prevThreads) =>
                     prevThreads.map((thread) =>
-                        thread.thread_id === id
+                        thread.thread_id === thread_id
                             ? {
                                 ...thread,
-                                votes: thread.votes + 1,
-                                upvotes: thread.upvotes + 1,
+                                votes: thread.userVote === "upvote"
+                                    ? thread.votes - 1
+                                    : thread.userVote === "downvote"
+                                        ? thread.votes + 2
+                                        : thread.votes + 1,
+                                upvotes: thread.userVote === "upvote"
+                                    ? thread.upvotes - 1
+                                    : thread.upvotes + 1,
+                                downvotes: thread.userVote === "downvote"
+                                    ? thread.downvotes - 1
+                                    : thread.downvotes,
+                                userVote: thread.userVote === "upvote" ? undefined : "upvote",
                             }
                             : thread
                     )
@@ -90,7 +100,8 @@ const Menu: React.FC = () => {
         }
     };
 
-    const handleDownvote = async (id: number) => {
+
+    const handleDownvote = async (thread_id: number) => {
         try {
             const token = sessionStorage.getItem("token");
             if (!token) {
@@ -99,7 +110,7 @@ const Menu: React.FC = () => {
             }
 
             const response = await axios.post(
-                `http://localhost:8080/threads/${id}/downvote`,
+                `http://localhost:8080/threads/${thread_id}/downvote`,
                 {},
                 {
                     headers: {
@@ -111,11 +122,21 @@ const Menu: React.FC = () => {
             if (response.status === 200) {
                 setThreads((prevThreads) =>
                     prevThreads.map((thread) =>
-                        thread.thread_id === id
+                        thread.thread_id === thread_id
                             ? {
                                 ...thread,
-                                votes: thread.votes - 1,
-                                downvotes: thread.downvotes + 1,
+                                votes: thread.userVote === "downvote"
+                                    ? thread.votes + 1
+                                    : thread.userVote === "upvote"
+                                        ? thread.votes - 2
+                                        : thread.votes - 1,
+                                downvotes: thread.userVote === "downvote"
+                                    ? thread.downvotes - 1
+                                    : thread.downvotes + 1,
+                                upvotes: thread.userVote === "upvote"
+                                    ? thread.upvotes - 1
+                                    : thread.upvotes,
+                                userVote: thread.userVote === "downvote" ? undefined : "downvote",
                             }
                             : thread
                     )
@@ -128,14 +149,15 @@ const Menu: React.FC = () => {
 
 
 
-    const handleDelete = async (id: number) => {
+
+    const handleDelete = async (thread_id: number) => {
         try {
             const response = await axios.delete(
-                `http://localhost:8080/threads/${id}`,
+                `http://localhost:8080/threads/${thread_id}`,
                 { headers: { Authorization: `Bearer ${sessionStorage.getItem("token")}` } }
             );
             if (response.status === 200) {
-                setThreads(threads.filter((thread) => thread.thread_id !== id));
+                setThreads(threads.filter((thread) => thread.thread_id !== thread_id));
                 alert("Thread deleted successfully.");
             }
         } catch (error) {
@@ -144,17 +166,17 @@ const Menu: React.FC = () => {
         }
     };
 
-    const handleEdit = async (id: number, newContent: string) => {
+    const handleEdit = async (thread_id: number, newContent: string) => {
         try {
             const response = await axios.put(
-                `http://localhost:8080/threads/${id}`,
+                `http://localhost:8080/threads/${thread_id}`,
                 { content: newContent },
                 { headers: { Authorization: `Bearer ${sessionStorage.getItem("token")}` } }
             );
             if (response.status === 200) {
                 setThreads(
                     threads.map((thread) =>
-                        thread.thread_id === id ? { ...thread, content: newContent } : thread
+                        thread.thread_id === thread_id ? { ...thread, content: newContent } : thread
                     )
                 );
                 alert("Thread edited successfully.");
@@ -175,23 +197,21 @@ const Menu: React.FC = () => {
                 ) : (
                     <ul className="space-y-4">
                         {threads.map((thread) => {
-                            console.log("Thread passed to ThreadContainer:", thread);
                             return (
                                 <ThreadContainer
                                     key={thread.thread_id}
-                                    {...thread}
-                                    id={thread.thread_id}
+                                    thread_id={thread.thread_id}
                                     username={thread.username}
                                     title={thread.title}
                                     tags={thread.tags}
                                     content={thread.content}
                                     commentCount={thread.commentCount}
-                                    votes={thread.votes}
                                     loggedInUser={loggedInUser}
-                                    onUpvote={handleUpvote}
-                                    onDownvote={handleDownvote}
+                                    votes={thread.votes}
                                     onDelete={handleDelete}
                                     onEdit={handleEdit}
+                                    onUpvote={handleUpvote}
+                                    onDownvote={handleDownvote}
                                 />
                             );
                         })}

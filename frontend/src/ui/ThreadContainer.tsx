@@ -2,38 +2,33 @@ import React, {useState} from "react";
 import {useNavigate} from "react-router-dom";
 
 interface ThreadProps {
-    id: number;
+    thread_id: number;
     username: string;
     title: string;
     tags: string | null;
     content: string;
     commentCount: number;
     loggedInUser: string;
-    onDelete: (id: number) => void;
-    onEdit: (id: number, newContent: string) => void
     votes: number;
-    userVote: "upvoted" | "downvoted" | null;
-    onUpvote: (id: number) => void;
-    onDownvote: (id: number) => void;
+    onDelete: (thread_id: number) => void;
+    onEdit: (thread_id: number, newContent: string) => void
+    onUpvote: (thread_id: number) => void;
+    onDownvote: (thread_id: number) => void;
 
 }
 
-const ThreadContainer: React.FC<ThreadProps> = ({ id, username, title, tags, content, commentCount, votes, loggedInUser, onUpvote, onDownvote, onDelete, onEdit }) => {
+const ThreadContainer: React.FC<ThreadProps> = ({ thread_id, username, title, tags, content, commentCount, loggedInUser, votes, onDelete, onEdit, onUpvote, onDownvote}) => {
     const [isEditing, setIsEditing] = useState(false);
     const [newContent, setNewContent] = useState(content);
     const navigate = useNavigate();
-    const [userVote, setUserVote] = useState<"upvoted" | "downvoted" | null>(null);
-
-
-    console.log("ThreadContainer received ID:", id);
+    const [userVote, setUserVote] = useState<"upvote" | "downvote" | null>(null);
 
     const truncatedContent =
         content.length > 200 ? content.slice(0, 200) + "..." : content;
 
     const handleReadMore = () => {
-        console.log("Navigating to thread with ID:", id);
-        if (id) {
-            navigate(`/threads/${id}`); // Navigate to thread details page
+        if (thread_id) {
+            navigate(`/threads/${thread_id}`); // Navigate to thread details page
         } else {
             console.error("Thread ID is undefined");
         }
@@ -50,13 +45,13 @@ const ThreadContainer: React.FC<ThreadProps> = ({ id, username, title, tags, con
             setIsEditing(false);
             return;
         }
-        onEdit(id, newContent);
+        onEdit(thread_id, newContent);
         setIsEditing(false);
     };
 
     const handleDelete = () => {
         if (window.confirm("Deleted posts cannot be restored. Do you really want to delete this?")) {
-            onDelete(id);
+            onDelete(thread_id);
         }
     }
     return (
@@ -120,18 +115,18 @@ const ThreadContainer: React.FC<ThreadProps> = ({ id, username, title, tags, con
             )}
             <div className="absolute bottom-2 right-2 flex items-center space-x-4">
                 <button
-                    onClick={() => onDownvote(id)}
+                    onClick={() => onDownvote(thread_id)}
                     className={`hover:bg-gray-200 rounded-full p-2 ${
-                        userVote === "downvoted" ? "bg-red-500 text-white" : "bg-gray-300"
+                        userVote === "downvote" ? "bg-red-500" : "bg-gray-300"
                     }`}
                 >
                     <img src="/down.svg" alt="Downvote" className="h-6 w-6"/>
                 </button>
                 <span className="text-lg font-bold">{votes}</span>
                 <button
-                    onClick={() => onUpvote(id)}
+                    onClick={() => onUpvote(thread_id)}
                     className={`hover:bg-gray-200 rounded-full p-2 ${
-                        userVote === "upvoted" ? "bg-blue-500 text-white" : "bg-gray-300"
+                        userVote === "upvote" ? "bg-blue-500" : "bg-gray-300"
                     }`}
                 >
                     <img src="/up.svg" alt="Upvote" className="h-6 w-6"/>

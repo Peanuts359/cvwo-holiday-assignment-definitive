@@ -4,15 +4,37 @@ import (
 	"assignment-definitive/backend/utils"
 	"database/sql"
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
+	"strings"
 )
 
 func DownvoteThreadHandler(c *gin.Context, db *sql.DB) {
-	threadID := c.Param("id")
+	threadID := c.Param("thread_id")
+	log.Println("downvoting thread: " + threadID)
 
-	userID, err := utils.GetUserIDFromToken(c, db)
+	authHeader := c.GetHeader("Authorization")
+	if authHeader == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Missing Authorization header"})
+		return
+	}
+	tokenString := strings.TrimPrefix(authHeader, "Bearer ")
+
+	username, err := utils.UsernameFromToken(tokenString)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		return
+	}
+
+	var userID int
+	query := "SELECT id FROM users WHERE username = ?"
+	err = db.QueryRow(query, username).Scan(&userID)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "User not found"})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "DB Error"})
 		return
 	}
 
