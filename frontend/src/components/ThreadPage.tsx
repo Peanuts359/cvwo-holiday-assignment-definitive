@@ -17,7 +17,6 @@ const ThreadPage: React.FC = () => {
     const [comments, setComments] = useState<Comment[]>([]);
     const [newComment, setNewComment] = useState<string>("");
     const [loggedInUser, setLoggedInUser] = useState<string>("");
-    const [currentVote, setCurrentVote] = useState<string | null>(null);
     const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
     useEffect(() => {
@@ -76,7 +75,6 @@ const ThreadPage: React.FC = () => {
                 setComments([...comments, response.data]);
                 setNewComment("");
                 alert("Comment added successfully!");
-                window.location.reload();
             }
         } catch (error) {
             console.error("Error adding comment:", error);
@@ -107,7 +105,6 @@ const ThreadPage: React.FC = () => {
                     )
                 );
                 alert("Comment edited successfully!");
-                window.location.reload();
             }
         } catch (error) {
             console.error("Error editing comment:", error);
@@ -136,7 +133,6 @@ const ThreadPage: React.FC = () => {
             if (response.status === 200) {
                 setComments(comments.filter((comment) => comment.comment_id !== comment_id));
                 alert("Comment deleted successfully.");
-                window.location.reload();
             }
         } catch (error) {
             console.error("Error deleting comment:", error);

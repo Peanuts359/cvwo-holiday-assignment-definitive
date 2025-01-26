@@ -3,8 +3,10 @@ package main
 import (
 	"database/sql"
 	"log"
+	"os"
 
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	_ "modernc.org/sqlite"
 
 	"github.com/Peanuts359/cvwo-holiday-assignment-definitive/backend/handlers"
@@ -78,15 +80,25 @@ func initDB() {
 
 func main() {
 	initDB()
-	r := gin.Default()
+	err := godotenv.Load("./.env")
+	if err != nil {
+		log.Println("Warning: No .env file found or unable to load it")
+	}
 
-	err := r.SetTrustedProxies(nil)
+	r := gin.Default()
+	allowedOrigin := os.Getenv("ALLOWED_ORIGIN")
+	if allowedOrigin == "" {
+		// Fallback to a default origin if not set
+		allowedOrigin = "http://localhost:3000" // Replace with your development origin
+	}
+
+	err = r.SetTrustedProxies(nil)
 	if err != nil {
 		log.Fatal("Failed to set trusted proxies:", err)
 	}
 
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"https://cvwo-holiday-assignment-definitive-8e2u.onrender.com"},
+		AllowOrigins:     []string{allowedOrigin},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
 		AllowHeaders:     []string{"Content-Type", "Authorization", "Username"},
 		AllowCredentials: true,
