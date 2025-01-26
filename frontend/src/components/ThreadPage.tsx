@@ -220,27 +220,6 @@ const ThreadPage: React.FC = () => {
                 </p>
                 <p className="text-gray-500">Tags: {thread.tags || "No tags"}</p>
                 <p className="mt-4">{thread.content}</p>
-
-                <div className="flex items-center space-x-4">
-                    <button
-                        onClick={handleDownvote}
-                        className={`hover:bg-gray-200 rounded-full p-2 ${
-                            thread.userVote === "downvoted" ? "bg-blue-500 text-white" : "bg-gray-300"
-                        }`}
-                    >
-                        <img src="/down.svg" alt="Downvote" className="h-6 w-6"/>
-                    </button>
-                    <span className="text-lg font-bold">{thread.votes}</span>
-                    <button
-                        onClick={handleUpvote}
-                        className={`hover:bg-gray-200 rounded-full p-2 ${
-                            thread.userVote === "upvoted" ? "bg-red-500 text-white" : "bg-gray-300"
-                        }`}
-                    >
-                        <img src="/up.svg" alt="Upvote" className="h-6 w-6"/>
-                    </button>
-                </div>
-
                 <div className="mt-8">
                     <div>
                         <h2 className="text-lg font-bold">Comments: {comments.length}</h2>
