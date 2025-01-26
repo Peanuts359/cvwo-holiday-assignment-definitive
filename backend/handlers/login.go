@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"assignment-definitive/backend/utils"
+	"github.com/Peanuts359/cvwo-holiday-assignment-definitive/backend/utils"
 	"github.com/gin-gonic/gin"
 )
 

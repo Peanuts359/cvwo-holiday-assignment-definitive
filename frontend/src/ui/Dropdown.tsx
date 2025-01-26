@@ -29,7 +29,7 @@ const Dropdown: React.FC<dropdownProps> = ({ onSignOut, create }) => {
                         onClick={create}
                         className="block w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-500 hover:text-white focus:outline-none"
                     >
-                        Create New Post
+                        Create New Thread
                     </button>
                     <button
                         onClick={onSignOut}

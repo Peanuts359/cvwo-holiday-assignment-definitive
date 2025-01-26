@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useApi } from "../hooks/useApi";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const Login: React.FC = () => {
     const { login } = useApi();
@@ -70,9 +70,9 @@ const Login: React.FC = () => {
                 </div>
 
                 <div className="mt-2">
-                    <a href="/reset" className="text-sm text-blue-500 hover:bold">
+                    <Link to="/reset" className="text-sm text-blue-500 hover:bold">
                         Forgot password?
-                    </a>
+                    </Link>
                 </div>
 
                 <button
@@ -85,9 +85,9 @@ const Login: React.FC = () => {
                     <span className="text-sm text-gray-600">
                         New? Sign up&nbsp;
                     </span>
-                    <a href="/register" className="text-sm text-blue-500 hover:bold">
+                    <Link to="/register" className="text-sm text-blue-500 hover:bold">
                         here
-                    </a>
+                    </Link>
                 </div>
             </form>
         </div>

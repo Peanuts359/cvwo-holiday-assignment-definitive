@@ -1,11 +1,11 @@
 import axios, { AxiosResponse } from "axios";
 
-const API_URL = "http://localhost:8080";
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
 export const useApi = () => {
     const login = async (data: { username: string; password: string }): Promise<any> => {
         try {
-            const response: AxiosResponse<any> = await axios.post(`${API_URL}/`, data);
+            const response: AxiosResponse<any> = await axios.post(`${backendUrl}/`, data);
             return response.data; // Return the token or response body
         } catch (error: any) {
             if (error.response?.data?.error) {
@@ -16,17 +16,17 @@ export const useApi = () => {
     };
 
     const register = async (data: { username: string; email: string; password: string }) => {
-        const response = await axios.post(`${API_URL}/register`, data);
+        const response = await axios.post(`${backendUrl}/register`, data);
         return response.data;
     };
 
     const reset = async (data: { email: string; newPassword: string }) => {
-        const response = await axios.post(`${API_URL}/reset`, data);
+        const response = await axios.post(`${backendUrl}/reset`, data);
         return response.data;
     };
 
     const menu = async (): Promise<any> => {
-        const response: AxiosResponse<any> = await axios.get(`${API_URL}/menu`, {
+        const response: AxiosResponse<any> = await axios.get(`${backendUrl}/menu`, {
             headers: {
                 Authorization: `Bearer ${sessionStorage.getItem("token")}`,
             },
@@ -35,7 +35,7 @@ export const useApi = () => {
     };
 
     const createThread = async (): Promise<any> => {
-        const response: AxiosResponse<any> = await axios.get(`${API_URL}/create`, {
+        const response: AxiosResponse<any> = await axios.get(`${backendUrl}/create`, {
             headers: {
                 Authorization: `Bearer ${sessionStorage.getItem("token")}`,
             },
@@ -44,7 +44,7 @@ export const useApi = () => {
     };
 
     const getThreads = async (): Promise<any> => {
-        const response: AxiosResponse<any> = await axios.get(`${API_URL}/threads`, {
+        const response: AxiosResponse<any> = await axios.get(`${backendUrl}/threads`, {
             headers: {
                 Authorization: `Bearer ${sessionStorage.getItem("token")}`,
             },
@@ -53,7 +53,7 @@ export const useApi = () => {
     };
 
     const deleteThread = async (id: number): Promise<any> => {
-        const response: AxiosResponse<any> = await axios.delete(`${API_URL}/threads/${id}`, {
+        const response: AxiosResponse<any> = await axios.delete(`${backendUrl}/threads/${id}`, {
             headers: {
                 Authorization: `Bearer ${sessionStorage.getItem("token")}`,
             },

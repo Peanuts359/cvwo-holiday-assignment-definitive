@@ -17,6 +17,7 @@ interface Thread {
 }
 
 const Menu: React.FC = () => {
+    const backendUrl = process.env.REACT_APP_BACKEND_URL;
     const [threads, setThreads] = useState<Thread[]>([]);
     const [loggedInUser, setLoggedInUser] = useState<string>("");
 
@@ -28,7 +29,7 @@ const Menu: React.FC = () => {
                     throw new Error("Invalid session. Please log in again.");
                 }
 
-                const response = await axios.get("http://localhost:8080/username", {
+                const response = await axios.get(`${backendUrl}/username`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -47,7 +48,7 @@ const Menu: React.FC = () => {
                     alert("You must be logged in to vote.");
                     return;
                 }
-                const response = await axios.get("http://localhost:8080/threads", {
+                const response = await axios.get(`${backendUrl}/threads`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -62,7 +63,7 @@ const Menu: React.FC = () => {
 
         fetchUser();
         fetchThreads();
-    }, []);
+    }, [backendUrl]);
 
     const handleUpvote = async (thread_id: number) => {
         try {
@@ -72,7 +73,7 @@ const Menu: React.FC = () => {
                 return;
             }
             const response = await axios.post(
-                `http://localhost:8080/threads/${thread_id}/upvote`,
+                `${backendUrl}/threads/${thread_id}/upvote`,
                 {},
                 {
                     headers: {
@@ -119,7 +120,7 @@ const Menu: React.FC = () => {
             }
 
             const response = await axios.post(
-                `http://localhost:8080/threads/${thread_id}/downvote`,
+                `${backendUrl}/threads/${thread_id}/downvote`,
                 {},
                 {
                     headers: {
@@ -162,7 +163,7 @@ const Menu: React.FC = () => {
     const handleDelete = async (thread_id: number) => {
         try {
             const response = await axios.delete(
-                `http://localhost:8080/threads/${thread_id}`,
+                `${backendUrl}/threads/${thread_id}`,
                 { headers: { Authorization: `Bearer ${sessionStorage.getItem("token")}` } }
             );
             if (response.status === 200) {
@@ -178,7 +179,7 @@ const Menu: React.FC = () => {
     const handleEdit = async (thread_id: number, newContent: string) => {
         try {
             const response = await axios.put(
-                `http://localhost:8080/threads/${thread_id}`,
+                `${backendUrl}/threads/${thread_id}`,
                 { content: newContent },
                 { headers: { Authorization: `Bearer ${sessionStorage.getItem("token")}` } }
             );

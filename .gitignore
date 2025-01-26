@@ -1,5 +1,6 @@
 # Sensitive variables
-.env
+backend/.env
+frontend/.env
 .env.local
 .env.*.local
 
@@ -7,5 +8,8 @@
 .idea/*
 .vscode/*
 frontend/node_modules
+frontend/build
+backend/main.exe
+database.db
 
 backend/.idea/*
