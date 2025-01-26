@@ -51,69 +51,7 @@ const ThreadPage: React.FC = () => {
         };
         fetchThread();
         fetchLoggedInUser();
-    }, [thread_id]);
-
-    const handleUpvote = async () => {
-        try {
-            const token = sessionStorage.getItem("token");
-            if (!token) {
-                alert("You must be logged in to vote.");
-                return;
-            }
-
-            const response = await axios.post(
-                `${backendUrl}/threads/${thread_id}/upvote`,
-                {},
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
-
-            if (response.status === 200) {
-                setThread((prevThread: any) => ({
-                    ...prevThread,
-                    upvotes: prevThread.upvotes + (currentVote === "upvote" ? -1 : 1),
-                    downvotes: currentVote === "downvote" ? prevThread.downvotes - 1 : prevThread.downvotes,
-                    votes:
-                        prevThread.upvotes -
-                        prevThread.downvotes +
-                        (currentVote === "upvote" ? -1 : currentVote === "downvote" ? 2 : 1),
-                }));
-                setCurrentVote(currentVote === "upvote" ? null : "upvote");
-            }
-        } catch (error) {
-            console.error("Error upvoting thread:", error);
-        }
-    };
-
-    const handleDownvote = async () => {
-        try {
-            const token = sessionStorage.getItem("token");
-            if (!token) {
-                alert("You must be logged in to vote.");
-                return;
-            }
-
-            const response = await axios.post(
-                `${backendUrl}/threads/${thread_id}/downvote`,
-                {},
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
-
-            if (response.status === 200) {
-                setThread((prevThread: any) => ({
-                    ...prevThread,
-                    upvotes: currentVote === "upvote" ? prevThread.upvotes - 1 : prevThread.upvotes,
-                    downvotes: prevThread.downvotes + (currentVote === "downvote" ? -1 : 1),
-                    votes:
-                        prevThread.upvotes -
-                        prevThread.downvotes +
-                        (currentVote === "downvote" ? 1 : currentVote === "upvote" ? -2 : -1),
-                }));
-                setCurrentVote(currentVote === "downvote" ? null : "downvote");
-            }
-        } catch (error) {
-            console.error("Error downvoting thread:", error);
-        }
-    };
+    }, [thread_id, backendUrl]);
 
     const handleAddComment = async () => {
         const token = sessionStorage.getItem("token");

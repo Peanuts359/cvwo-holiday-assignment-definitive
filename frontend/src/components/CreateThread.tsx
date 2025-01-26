@@ -32,7 +32,7 @@ const CreateThread: React.FC = () => {
             }
         };
         fetchUsername();
-    }, []);
+    }, [backendUrl]);
 
     const handleTitleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         if (event.target.value.length <= 100) {

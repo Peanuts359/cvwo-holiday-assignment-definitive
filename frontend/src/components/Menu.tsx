@@ -63,7 +63,7 @@ const Menu: React.FC = () => {
 
         fetchUser();
         fetchThreads();
-    }, []);
+    }, [backendUrl]);
 
     const handleUpvote = async (thread_id: number) => {
         try {
