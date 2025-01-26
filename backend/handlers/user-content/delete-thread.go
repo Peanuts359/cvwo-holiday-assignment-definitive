@@ -1,8 +1,8 @@
 package user_content
 
 import (
-	"assignment-definitive/backend/utils"
 	"database/sql"
+	"github.com/Peanuts359/cvwo-assignment-definitive/backend/utils"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"

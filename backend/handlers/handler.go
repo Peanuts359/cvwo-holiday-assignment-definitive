@@ -1,9 +1,9 @@
 package handlers
 
 import (
-	"assignment-definitive/backend/handlers/user-content"
-	"assignment-definitive/backend/handlers/user-content/votes"
 	"database/sql"
+	"github.com/Peanuts359/cvwo-assignment-definitive/backend/handlers/user-content"
+	"github.com/Peanuts359/cvwo-assignment-definitive/backend/handlers/user-content/votes"
 	"github.com/gin-gonic/gin"
 )
 
