@@ -1,4 +1,4 @@
-module github.com/Peanuts359/cvwo-assignment-definitive/backend
+module github.com/Peanuts359/cvwo-holiday-assignment-definitive/backend
 
 go 1.23.4
 

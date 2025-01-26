@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"github.com/Peanuts359/cvwo-assignment-definitive/backend/utils"
+	"github.com/Peanuts359/cvwo-holiday-assignment-definitive/backend/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strings"

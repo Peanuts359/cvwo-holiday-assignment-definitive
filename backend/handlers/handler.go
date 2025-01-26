@@ -2,8 +2,8 @@ package handlers
 
 import (
 	"database/sql"
-	"github.com/Peanuts359/cvwo-assignment-definitive/backend/handlers/user-content"
-	"github.com/Peanuts359/cvwo-assignment-definitive/backend/handlers/user-content/votes"
+	"github.com/Peanuts359/cvwo-holiday-assignment-definitive/backend/handlers/user-content"
+	"github.com/Peanuts359/cvwo-holiday-assignment-definitive/backend/handlers/user-content/votes"
 	"github.com/gin-gonic/gin"
 )
 

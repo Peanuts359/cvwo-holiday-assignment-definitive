@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	_ "modernc.org/sqlite"
 
-	"github.com/Peanuts359/cvwo-assignment-definitive/backend/handlers"
+	"github.com/Peanuts359/cvwo-holiday-assignment-definitive/backend/handlers"
 	"github.com/gin-contrib/cors"
 )
 
