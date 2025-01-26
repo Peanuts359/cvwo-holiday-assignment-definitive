@@ -9,6 +9,7 @@ const CreateThread: React.FC = () => {
     const [tags, setTags] = useState<string>("");
     const [username, setUsername] = useState<string>("Anonymous");
     const navigate = useNavigate();
+    const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
     useEffect(() => {
         const fetchUsername = async () => {
@@ -18,7 +19,7 @@ const CreateThread: React.FC = () => {
                     throw new Error("Invalid session. Please log in again.");
                 }
 
-                const response = await axios.get("http://localhost:8080/username", {
+                const response = await axios.get(`${backendUrl}/username`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -57,7 +58,7 @@ const CreateThread: React.FC = () => {
         }
 
         try {
-            const response = await fetch("http://localhost:8080/create-thread", {
+            const response = await fetch(`${backendUrl}/create-thread`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

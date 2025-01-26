@@ -7,6 +7,7 @@ import axios from "axios";
 const Navbar: React.FC = () => {
     const [username, setUsername] = useState<string | null>(null);
     const navigate = useNavigate();
+    const backendUrl: string = process.env.REACT_APP_BACKEND_URL;
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -16,7 +17,7 @@ const Navbar: React.FC = () => {
                     throw new Error("Invalid session. Please log in again.");
                 }
 
-                const response = await axios.get("http://localhost:8080/username", {
+                const response = await axios.get(`${backendUrl}/username`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },

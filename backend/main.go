@@ -86,7 +86,7 @@ func main() {
 	}
 
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:3000"},
+		AllowOrigins:     []string{"https://cvwo-holiday-assignment-definitive-8e2u.onrender.com"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
 		AllowHeaders:     []string{"Content-Type", "Authorization", "Username"},
 		AllowCredentials: true,

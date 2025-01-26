@@ -18,14 +18,15 @@ const ThreadPage: React.FC = () => {
     const [newComment, setNewComment] = useState<string>("");
     const [loggedInUser, setLoggedInUser] = useState<string>("");
     const [currentVote, setCurrentVote] = useState<string | null>(null);
+    const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
     useEffect(() => {
         const fetchThread = async () => {
             try {
-                const threadResponse = await axios.get(`http://localhost:8080/threads/${thread_id}`);
+                const threadResponse = await axios.get(`${backendUrl}/threads/${thread_id}`);
                 setThread(threadResponse.data);
 
-                const commentsResponse = await axios.get(`http://localhost:8080/threads/${thread_id}/comments`);
+                const commentsResponse = await axios.get(`${backendUrl}/threads/${thread_id}/comments`);
                 console.log("API response for comments:", commentsResponse.data);
                 setComments(commentsResponse.data || []);
             } catch (error) {
@@ -38,7 +39,7 @@ const ThreadPage: React.FC = () => {
                 const token = sessionStorage.getItem("token");
                 if (!token) return;
 
-                const response = await axios.get("http://localhost:8080/username", {
+                const response = await axios.get(`${backendUrl}/username`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -61,7 +62,7 @@ const ThreadPage: React.FC = () => {
             }
 
             const response = await axios.post(
-                `http://localhost:8080/threads/${thread_id}/upvote`,
+                `${backendUrl}/threads/${thread_id}/upvote`,
                 {},
                 { headers: { Authorization: `Bearer ${token}` } }
             );
@@ -92,7 +93,7 @@ const ThreadPage: React.FC = () => {
             }
 
             const response = await axios.post(
-                `http://localhost:8080/threads/${thread_id}/downvote`,
+                `${backendUrl}/threads/${thread_id}/downvote`,
                 {},
                 { headers: { Authorization: `Bearer ${token}` } }
             );
@@ -128,7 +129,7 @@ const ThreadPage: React.FC = () => {
 
         try {
             const response = await axios.post(
-                `http://localhost:8080/threads/${thread_id}/comments`,
+                `${backendUrl}/threads/${thread_id}/comments`,
                 { content: newComment },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
@@ -154,7 +155,7 @@ const ThreadPage: React.FC = () => {
 
         try {
             const response = await axios.put(
-                `http://localhost:8080/threads/${thread_id}/comments/${comment_id}`,
+                `${backendUrl}/threads/${thread_id}/comments/${comment_id}`,
                 { content: newContent },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
@@ -190,7 +191,7 @@ const ThreadPage: React.FC = () => {
         try {
             console.log("Comment ID to delete:", comment_id);
             const response = await axios.delete(
-                `http://localhost:8080/threads/${thread_id}/comments/${comment_id}`,
+                `${backendUrl}/threads/${thread_id}/comments/${comment_id}`,
                 { headers: { Authorization: `Bearer ${token}` } }
             );
 
