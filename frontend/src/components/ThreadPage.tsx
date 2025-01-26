@@ -20,19 +20,6 @@ const ThreadPage: React.FC = () => {
     const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
     useEffect(() => {
-        const fetchThread = async () => {
-            try {
-                const threadResponse = await axios.get(`${backendUrl}/threads/${thread_id}`);
-                setThread(threadResponse.data);
-
-                const commentsResponse = await axios.get(`${backendUrl}/threads/${thread_id}/comments`);
-                console.log("API response for comments:", commentsResponse.data);
-                setComments(commentsResponse.data || []);
-            } catch (error) {
-                console.error("Error fetching thread details:", error);
-            }
-        };
-
         const fetchLoggedInUser = async () => {
             try {
                 const token = sessionStorage.getItem("token");
@@ -51,6 +38,19 @@ const ThreadPage: React.FC = () => {
         fetchThread();
         fetchLoggedInUser();
     }, [thread_id, backendUrl]);
+
+    const fetchThread = async () => {
+        try {
+            const threadResponse = await axios.get(`${backendUrl}/threads/${thread_id}`);
+            setThread(threadResponse.data);
+
+            const commentsResponse = await axios.get(`${backendUrl}/threads/${thread_id}/comments`);
+            console.log("API response for comments:", commentsResponse.data);
+            setComments(commentsResponse.data || []);
+        } catch (error) {
+            console.error("Error fetching thread details:", error);
+        }
+    };
 
     const handleAddComment = async () => {
         const token = sessionStorage.getItem("token");
@@ -72,9 +72,11 @@ const ThreadPage: React.FC = () => {
             );
 
             if (response.status === 201) {
-                setComments([...comments, response.data]);
+                const newComment = response.data;
+                setComments((prevComments) => [...prevComments, newComment]);
                 setNewComment("");
                 alert("Comment added successfully!");
+                fetchThread();
             }
         } catch (error) {
             console.error("Error adding comment:", error);
